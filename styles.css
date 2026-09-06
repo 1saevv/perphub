@@ -695,12 +695,13 @@ input[type="range"]::-webkit-slider-thumb {
 
 .chart-panel {
   margin-top: 0;
+  padding: 4px 6px 0;
 }
 
 .chart-panel svg {
   display: block;
   width: 100%;
-  height: 236px;
+  height: 240px;
 }
 
 .grid-line {
@@ -718,7 +719,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .chart-value-label {
   fill: var(--accent);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 800;
   text-anchor: middle;
 }
@@ -726,7 +727,7 @@ input[type="range"]::-webkit-slider-thumb {
 .axis-label {
   fill: var(--muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
 }
 
@@ -1308,6 +1309,17 @@ input[type="range"]::-webkit-slider-thumb {
     padding-bottom: 92px;
   }
 
+  body::after {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 79;
+    height: calc(74px + env(safe-area-inset-bottom));
+    background: #111113;
+    content: "";
+  }
+
   .hero-row,
   .calculator-grid,
   .scenario-grid,
@@ -1358,13 +1370,13 @@ input[type="range"]::-webkit-slider-thumb {
     display: flex;
     position: fixed;
     right: 0;
-    bottom: 0;
+    bottom: -1px;
     left: 0;
     z-index: 80;
     justify-content: center;
     gap: 6px;
-    min-height: 58px;
-    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    min-height: calc(58px + env(safe-area-inset-bottom));
+    padding: 8px 10px calc(9px + env(safe-area-inset-bottom));
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-right: 0;
     border-bottom: 0;
@@ -1449,6 +1461,14 @@ input[type="range"]::-webkit-slider-thumb {
   .chart-panel,
   .vooi-panel {
     padding: 18px;
+  }
+
+  .chart-panel {
+    padding: 2px 4px 0;
+  }
+
+  .chart-panel svg {
+    height: 250px;
   }
 
   .boost-map {

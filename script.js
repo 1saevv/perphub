@@ -189,16 +189,23 @@ function chartValueForTotalPoints(totalPoints, litPrice, rewardPoolLit) {
 }
 
 function renderChart(userPoints, rewardPoolLit, activeTotalPoints, activeValue) {
-  const left = 112;
-  const right = 836;
-  const top = 28;
-  const bottom = 208;
+  const isCompactChart = window.matchMedia("(max-width: 620px)").matches;
+  const svg = elements.chartGrid.closest("svg");
+  const left = isCompactChart ? 112 : 136;
+  const right = isCompactChart ? 552 : 858;
+  const top = isCompactChart ? 12 : 30;
+  const bottom = isCompactChart ? 230 : 218;
   const width = right - left;
   const height = bottom - top;
+  const viewBoxWidth = isCompactChart ? 580 : 900;
+  const valueLabelSize = isCompactChart ? 18 : 16;
+  const xLabelY = isCompactChart ? 254 : 246;
   const minPoints = 100000;
   const maxPoints = 5000000;
   const safeActivePoints = Math.max(minPoints, Math.min(maxPoints, activeTotalPoints));
-  const pointLevels = [100000, 250000, 500000, 1000000, 1500000, 2000000, 3000000, 5000000];
+  const pointLevels = isCompactChart
+    ? [100000, 500000, 1000000, 2000000, 5000000]
+    : [100000, 250000, 500000, 1000000, 1500000, 2000000, 3000000, 5000000];
   const bars = [
     ...pointLevels.filter((points) => points !== safeActivePoints).map((points) => ({
       label: formatCompact(points),
@@ -214,27 +221,31 @@ function renderChart(userPoints, rewardPoolLit, activeTotalPoints, activeValue) 
     },
   ].sort((a, b) => a.points - b.points);
   const maxValue = Math.max(...bars.map((bar) => bar.value)) * 1.08;
-  const barGap = 18;
-  const barWidth = Math.max(18, (width - barGap * (bars.length - 1)) / bars.length);
-  const gridValues = [maxValue, maxValue * 0.75, maxValue * 0.5, maxValue * 0.25, 0];
+  const barGap = isCompactChart ? 14 : 16;
+  const barWidth = Math.max(isCompactChart ? 38 : 28, (width - barGap * (bars.length - 1)) / bars.length);
+  const gridValues = isCompactChart ? [maxValue, maxValue * 0.5, 0] : [maxValue, maxValue * 0.75, maxValue * 0.5, maxValue * 0.25, 0];
   const y = (value) => bottom - (value / maxValue) * height;
+
+  svg.setAttribute("viewBox", `0 0 ${viewBoxWidth} 260`);
 
   elements.chartGrid.innerHTML = [
     ...gridValues.map((value) => {
       const gy = y(value).toFixed(1);
-      return `<path class="grid-line" d="M${left} ${gy}H${right}" /><text class="axis-label" x="12" y="${Number(gy) + 5}">${formatLit(value)}</text>`;
+      return `<path class="grid-line" d="M${left} ${gy}H${right}" /><text class="axis-label" x="8" y="${Number(gy) + 5}">${formatLit(value)}</text>`;
     }),
     ...bars.map((bar, index) => {
       const x = left + index * (barWidth + barGap);
       const barTop = y(bar.value);
       const barHeight = bottom - barTop;
       const labelX = x + barWidth / 2;
-      const valueLabel = bar.active ? `<text class="chart-value-label" x="${labelX.toFixed(1)}" y="${Math.max(barTop - 12, top + 14).toFixed(1)}">${formatLit(bar.value)}</text>` : "";
+      const valueLabelOffset = isCompactChart ? 12 : 18;
+      const valueLabelMinY = top + (isCompactChart ? 18 : 8);
+      const valueLabel = bar.active ? `<text class="chart-value-label" x="${labelX.toFixed(1)}" y="${Math.max(barTop - valueLabelOffset, valueLabelMinY).toFixed(1)}" style="font-size:${valueLabelSize}px">${formatLit(bar.value)}</text>` : "";
 
       return `
         <rect class="chart-bar${bar.active ? " active" : ""}" x="${x.toFixed(1)}" y="${barTop.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="5" />
         ${valueLabel}
-        <text class="axis-label chart-x-label${bar.active ? " active" : ""}" x="${labelX.toFixed(1)}" y="242">${bar.label}</text>
+        <text class="axis-label chart-x-label${bar.active ? " active" : ""}" x="${labelX.toFixed(1)}" y="${xLabelY}">${bar.label}</text>
       `;
     }),
   ].join("");
@@ -548,6 +559,8 @@ elements.shareModal.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeShareCard();
 });
+
+window.addEventListener("resize", calculate);
 
 elements.controlModeButtons.forEach((button) => {
   button.addEventListener("click", () => setControlMode(button.dataset.controlMode));
