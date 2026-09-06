@@ -392,7 +392,7 @@ async function drawShareCard(result) {
   ctx.font = "800 12px Menlo, monospace";
   ctx.fillText(formatLitPerPoint(result.estimatedValuePerPointLit), 34, height - 30);
   ctx.textAlign = "right";
-  ctx.fillText("perphub.xyz", width - 34, height - 30);
+  ctx.fillText("perp-hub.com", width - 34, height - 30);
   ctx.textAlign = "left";
 
   return canvas;
