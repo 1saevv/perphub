@@ -365,7 +365,7 @@ p {
 }
 
 .inputs-panel {
-  height: 338px;
+  min-height: 392px;
   align-content: start;
   overflow: hidden;
 }
@@ -413,6 +413,31 @@ p {
   padding-left: 40px;
 }
 
+.pnl-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pnl-toggle-label input {
+  width: 16px;
+  min-height: 16px;
+  height: 16px;
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+.pnl-field.is-disabled b,
+.pnl-field.is-disabled > input {
+  opacity: 0.46;
+}
+
+.pnl-field > input:disabled {
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.045);
+  background: rgba(7, 9, 10, 0.48);
+}
+
 input {
   width: 100%;
   min-height: 42px;
@@ -446,6 +471,10 @@ input:focus {
   margin: 0;
 }
 
+.estimate-mode {
+  margin: 0;
+}
+
 .control-mode-button {
   min-height: 30px;
   padding: 0 9px;
@@ -457,9 +486,29 @@ input:focus {
 }
 
 .control-mode-button.active {
+  color: #111113;
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 18px rgba(204, 255, 0, 0.18);
+}
+
+.input-mode .control-mode-button.active {
   color: var(--text);
-  border-color: var(--line-strong);
-  background: rgba(204, 255, 0, 0.12);
+  border-color: rgba(123, 176, 255, 0.52);
+  background: rgba(123, 176, 255, 0.16);
+  box-shadow: 0 0 18px rgba(123, 176, 255, 0.12);
+}
+
+.mode-field {
+  display: grid;
+  gap: 7px;
+  margin: -4px 0 14px;
+}
+
+.mode-field > span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
 }
 
 .slider-controls {
@@ -472,7 +521,7 @@ input:focus {
   display: none;
 }
 
-.inputs-panel.slider-mode .money-field {
+.inputs-panel.slider-mode .price-field {
   display: none;
 }
 
@@ -647,6 +696,18 @@ input[type="range"]::-webkit-slider-thumb {
 
 .result-card:nth-child(4) strong {
   color: #7bb0ff;
+}
+
+.net-profit-card {
+  grid-column: 1 / -1;
+}
+
+.net-profit-card strong {
+  color: #57c0a6;
+}
+
+.net-profit-card.is-negative strong {
+  color: #ff7b7b;
 }
 
 .result-card.compact {
@@ -1461,6 +1522,10 @@ input[type="range"]::-webkit-slider-thumb {
   .chart-panel,
   .vooi-panel {
     padding: 18px;
+  }
+
+  .inputs-panel {
+    min-height: 410px;
   }
 
   .chart-panel {

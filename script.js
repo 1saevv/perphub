@@ -4,29 +4,76 @@ const ACTIVE_TAB_STORAGE_KEY = "perphub.activeTab";
 const defaults = {
   userPoints: 16.8,
   litPrice: 4.7,
+  tradingPnl: 0,
   totalSeasonPoints: 250000,
   rewardPool: DEFAULT_REWARD_POOL_LIT,
 };
 
+const estimateModes = {
+  season: {
+    userPointsLabel: "Your Season Points",
+    totalPointsLabel: "Estimated Total Season Points",
+    userShareLabel: "Your Share of Total Points",
+    sharePointsLabel: "Season Points",
+    shareTotalPointsLabel: "Total Season",
+    shareTotalTextLabel: "Estimated Total Points",
+    min: 100000,
+    max: 5000000,
+    step: 50000,
+    minLabel: "100K points",
+    maxLabel: "5M points",
+    compactLevels: [100000, 500000, 1000000, 2000000, 5000000],
+    levels: [100000, 250000, 500000, 1000000, 1500000, 2000000, 3000000, 5000000],
+  },
+  weekly: {
+    userPointsLabel: "Your Avg Points / Week",
+    totalPointsLabel: "All Users Avg Points / Week",
+    userShareLabel: "Your Share of Weekly Pace",
+    sharePointsLabel: "Your Avg / Week",
+    shareTotalPointsLabel: "All Users / Week",
+    shareTotalTextLabel: "All Users Avg Points / Week",
+    min: 1000,
+    max: 500000,
+    step: 1000,
+    minLabel: "1K points",
+    maxLabel: "500K points",
+    compactLevels: [1000, 10000, 50000, 100000, 500000],
+    levels: [1000, 5000, 10000, 25000, 50000, 100000, 250000, 500000],
+  },
+};
+
+let activeEstimateMode = "season";
+
 const elements = {
   rewardPoolLabel: document.querySelector("#rewardPoolLabel"),
   userPoints: document.querySelector("#userPoints"),
+  userPointsLabel: document.querySelector("#userPointsLabel"),
   litPrice: document.querySelector("#litPrice"),
+  includePnl: document.querySelector("#includePnl"),
+  tradingPnl: document.querySelector("#tradingPnl"),
   litPriceRange: document.querySelector("#litPriceRange"),
   litPriceOutput: document.querySelector("#litPriceOutput"),
   rewardPool: document.querySelector("#rewardPool"),
   manualTotalPoints: document.querySelector("#manualTotalPoints"),
+  totalPointsLabel: document.querySelector("#totalPointsLabel"),
   manualTotalPointsRange: document.querySelector("#manualTotalPointsRange"),
+  totalPointsRangeLabel: document.querySelector("#totalPointsRangeLabel"),
   manualTotalPointsOutput: document.querySelector("#manualTotalPointsOutput"),
+  totalPointsMinLabel: document.querySelector("#totalPointsMinLabel"),
+  totalPointsMaxLabel: document.querySelector("#totalPointsMaxLabel"),
   estimatedLit: document.querySelector("#estimatedLit"),
   estimatedUsd: document.querySelector("#estimatedUsd"),
+  netProfit: document.querySelector("#netProfit"),
+  pnlBreakdown: document.querySelector("#pnlBreakdown"),
   valuePerPointLit: document.querySelector("#valuePerPointLit"),
   valuePerPointUsd: document.querySelector("#valuePerPointUsd"),
+  userShareLabel: document.querySelector("#userShareLabel"),
   userShare: document.querySelector("#userShare"),
   priceScenarios: document.querySelector("#priceScenarios"),
   copyButton: document.querySelector("#copyButton"),
   inputsPanel: document.querySelector(".inputs-panel"),
   controlModeButtons: document.querySelectorAll("[data-control-mode]"),
+  estimateModeButtons: document.querySelectorAll("[data-estimate-mode]"),
   tabButtons: document.querySelectorAll("[data-tab]"),
   homeLogoButton: document.querySelector("#homeLogoButton"),
   homeActionButtons: document.querySelectorAll("[data-home-target]"),
@@ -40,8 +87,8 @@ const elements = {
   shareCloseButton: document.querySelector("#shareCloseButton"),
   shareLit: document.querySelector("#shareLit"),
   shareUsd: document.querySelector("#shareUsd"),
-  sharePoints: document.querySelector("#sharePoints"),
-  shareTotalPoints: document.querySelector("#shareTotalPoints"),
+  sharePnl: document.querySelector("#sharePnl"),
+  shareNetProfit: document.querySelector("#shareNetProfit"),
   sharePrice: document.querySelector("#sharePrice"),
   shareValuePoint: document.querySelector("#shareValuePoint"),
   saveCardButton: document.querySelector("#saveCardButton"),
@@ -99,6 +146,18 @@ function numericValue(input) {
   return lastValidValues.get(input) ?? 0;
 }
 
+function signedNumericValue(input) {
+  const rawValue = input.value.trim();
+  const value = Number(rawValue);
+
+  if (rawValue !== "" && Number.isFinite(value)) {
+    lastValidValues.set(input, value);
+    return value;
+  }
+
+  return lastValidValues.get(input) ?? 0;
+}
+
 function formatLit(value) {
   return `${numberFormatter.format(value)} LIT`;
 }
@@ -110,6 +169,16 @@ function formatLitPerPoint(value) {
 function formatPercent(value) {
   if (!Number.isFinite(value) || value <= 0) return "0.000000%";
   return `${value.toFixed(6)}%`;
+}
+
+function formatSignedCurrency(value) {
+  const sign = value > 0 ? "+" : "";
+  return `${sign}${currencyFormatter.format(value)}`;
+}
+
+function formatPnlBreakdown(value) {
+  const operator = value < 0 ? "-" : "+";
+  return `Drop ${operator} ${currencyFormatter.format(Math.abs(value))} PnL`;
 }
 
 function formatCompact(value) {
@@ -146,25 +215,37 @@ function syncInputFromRange(input, range) {
 function updateControlLabels() {
   const litPrice = numericValue(elements.litPrice);
   const totalPoints = numericValue(elements.manualTotalPoints);
+  const mode = estimateModes[activeEstimateMode];
 
   elements.litPriceOutput.textContent = currencyFormatter.format(litPrice);
   elements.manualTotalPointsOutput.textContent = formatCompact(totalPoints);
   elements.rewardPoolLabel.textContent = `${numberFormatter.format(DEFAULT_REWARD_POOL_LIT)} LIT`;
+  elements.userPointsLabel.textContent = mode.userPointsLabel;
+  elements.totalPointsLabel.textContent = mode.totalPointsLabel;
+  elements.totalPointsRangeLabel.textContent = mode.totalPointsLabel;
+  elements.totalPointsMinLabel.textContent = mode.minLabel;
+  elements.totalPointsMaxLabel.textContent = mode.maxLabel;
+  elements.userShareLabel.textContent = mode.userShareLabel;
 }
 
 function calculate() {
   const userPoints = numericValue(elements.userPoints);
   const litPrice = numericValue(elements.litPrice);
+  const tradingPnl = elements.includePnl.checked ? signedNumericValue(elements.tradingPnl) : 0;
   const rewardPoolLit = DEFAULT_REWARD_POOL_LIT;
   const totalSeasonPoints = numericValue(elements.manualTotalPoints);
   const userShare = totalSeasonPoints > 0 ? userPoints / totalSeasonPoints : 0;
   const estimatedLit = userShare * rewardPoolLit;
   const estimatedUsd = estimatedLit * litPrice;
+  const netProfit = estimatedUsd + tradingPnl;
   const estimatedValuePerPointLit = totalSeasonPoints > 0 ? rewardPoolLit / totalSeasonPoints : 0;
   const estimatedValuePerPointUsd = estimatedValuePerPointLit * litPrice;
 
   elements.estimatedLit.textContent = formatLit(estimatedLit);
   elements.estimatedUsd.textContent = currencyFormatter.format(estimatedUsd);
+  elements.netProfit.textContent = currencyFormatter.format(netProfit);
+  elements.pnlBreakdown.textContent = formatPnlBreakdown(tradingPnl);
+  elements.netProfit.closest(".result-card").classList.toggle("is-negative", netProfit < 0);
   elements.valuePerPointLit.textContent = formatLitPerPoint(estimatedValuePerPointLit);
   elements.valuePerPointUsd.textContent = `${currencyFormatter.format(estimatedValuePerPointUsd)} / point`;
   elements.userShare.textContent = formatPercent(userShare * 100);
@@ -172,13 +253,17 @@ function calculate() {
   renderPriceScenarios(estimatedLit);
   renderChart(userPoints, rewardPoolLit, totalSeasonPoints, estimatedLit);
   updateControlLabels();
+  updatePnlState();
 
   return {
+    estimateMode: activeEstimateMode,
     userPoints,
     litPrice,
+    tradingPnl,
     totalSeasonPoints,
     estimatedLit,
     estimatedUsd,
+    netProfit,
     estimatedValuePerPointLit,
     estimatedValuePerPointUsd,
   };
@@ -190,6 +275,7 @@ function chartValueForTotalPoints(totalPoints, litPrice, rewardPoolLit) {
 
 function renderChart(userPoints, rewardPoolLit, activeTotalPoints, activeValue) {
   const isCompactChart = window.matchMedia("(max-width: 620px)").matches;
+  const mode = estimateModes[activeEstimateMode];
   const svg = elements.chartGrid.closest("svg");
   const left = isCompactChart ? 112 : 136;
   const right = isCompactChart ? 552 : 858;
@@ -200,12 +286,10 @@ function renderChart(userPoints, rewardPoolLit, activeTotalPoints, activeValue) 
   const viewBoxWidth = isCompactChart ? 580 : 900;
   const valueLabelSize = isCompactChart ? 18 : 16;
   const xLabelY = isCompactChart ? 254 : 246;
-  const minPoints = 100000;
-  const maxPoints = 5000000;
+  const minPoints = mode.min;
+  const maxPoints = mode.max;
   const safeActivePoints = Math.max(minPoints, Math.min(maxPoints, activeTotalPoints));
-  const pointLevels = isCompactChart
-    ? [100000, 500000, 1000000, 2000000, 5000000]
-    : [100000, 250000, 500000, 1000000, 1500000, 2000000, 3000000, 5000000];
+  const pointLevels = isCompactChart ? mode.compactLevels : mode.levels;
   const bars = [
     ...pointLevels.filter((points) => points !== safeActivePoints).map((points) => ({
       label: formatCompact(points),
@@ -266,27 +350,31 @@ function renderPriceScenarios(estimatedLit) {
 }
 
 function getShareText(result) {
+  const mode = estimateModes[result.estimateMode];
+
   return [
     "Lighter x Robinhood Estimate",
     "",
-    `My Points: ${numberFormatter.format(result.userPoints)}`,
-    `Estimated Total Points: ${numberFormatter.format(result.totalSeasonPoints)}`,
+    `${mode.sharePointsLabel}: ${numberFormatter.format(result.userPoints)}`,
+    `${mode.shareTotalTextLabel}: ${numberFormatter.format(result.totalSeasonPoints)}`,
     `Estimated LIT: ${formatLit(result.estimatedLit)}`,
     `LIT Price: ${currencyFormatter.format(result.litPrice)}`,
     `Estimated Value: ${currencyFormatter.format(result.estimatedUsd)}`,
+    `Trading PnL: ${formatSignedCurrency(result.tradingPnl)}`,
+    `Net Profit: ${currencyFormatter.format(result.netProfit)}`,
     `Estimated Value Per Point: ${currencyFormatter.format(result.estimatedValuePerPointUsd)}`,
   ].join("\n");
 }
 
 function getXShareText(result) {
-  return `My Lighter points estimate: ${formatLit(result.estimatedLit)} / ${currencyFormatter.format(result.estimatedUsd)}.\nCalculated on PerpHub.`;
+  return `My Lighter points estimate: ${formatLit(result.estimatedLit)} / ${currencyFormatter.format(result.estimatedUsd)}. Net incl. PnL: ${currencyFormatter.format(result.netProfit)}.\nCalculated on PerpHub.`;
 }
 
 function updateShareCard(result) {
   elements.shareLit.textContent = formatLit(result.estimatedLit);
   elements.shareUsd.textContent = currencyFormatter.format(result.estimatedUsd);
-  elements.sharePoints.textContent = numberFormatter.format(result.userPoints);
-  elements.shareTotalPoints.textContent = formatCompact(result.totalSeasonPoints);
+  elements.sharePnl.textContent = formatSignedCurrency(result.tradingPnl);
+  elements.shareNetProfit.textContent = currencyFormatter.format(result.netProfit);
   elements.sharePrice.textContent = currencyFormatter.format(result.litPrice);
   elements.shareValuePoint.textContent = formatLitPerPoint(result.estimatedValuePerPointLit);
 }
@@ -372,9 +460,9 @@ async function drawShareCard(result) {
   ctx.fillText(formatLit(result.estimatedLit), 34, 238);
 
   const metrics = [
-    ["USD Value", currencyFormatter.format(result.estimatedUsd)],
-    ["Your Points", numberFormatter.format(result.userPoints)],
-    ["Total Points", formatCompact(result.totalSeasonPoints)],
+    ["USD Drop", currencyFormatter.format(result.estimatedUsd)],
+    ["Trading PnL", formatSignedCurrency(result.tradingPnl)],
+    ["Net Profit", currencyFormatter.format(result.netProfit)],
     ["LIT Price", currencyFormatter.format(result.litPrice)],
   ];
   metrics.forEach(([label, value], index) => {
@@ -521,6 +609,29 @@ function setControlMode(nextMode) {
   });
 }
 
+function setEstimateMode(nextMode) {
+  activeEstimateMode = estimateModes[nextMode] ? nextMode : "season";
+  const mode = estimateModes[activeEstimateMode];
+
+  elements.manualTotalPointsRange.min = mode.min;
+  elements.manualTotalPointsRange.max = mode.max;
+  elements.manualTotalPointsRange.step = mode.step;
+  syncRangeFromInput(elements.manualTotalPoints, elements.manualTotalPointsRange);
+
+  elements.estimateModeButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.estimateMode === activeEstimateMode);
+  });
+
+  calculate();
+}
+
+function updatePnlState() {
+  const isEnabled = elements.includePnl.checked;
+
+  elements.tradingPnl.disabled = !isEnabled;
+  elements.tradingPnl.closest(".pnl-field").classList.toggle("is-disabled", !isEnabled);
+}
+
 function loadVooiVideo() {
   const videoId = elements.vooiVideo?.dataset.youtubeId;
   if (!videoId || elements.vooiVideo.querySelector("iframe")) return;
@@ -545,6 +656,8 @@ function loadVooiVideo() {
 }
 
 elements.userPoints.addEventListener("input", calculate);
+elements.includePnl.addEventListener("change", calculate);
+elements.tradingPnl.addEventListener("input", calculate);
 bindSyncedControl(elements.litPrice, elements.litPriceRange);
 bindSyncedControl(elements.manualTotalPoints, elements.manualTotalPointsRange);
 elements.copyButton.addEventListener("click", openShareCard);
@@ -566,6 +679,10 @@ elements.controlModeButtons.forEach((button) => {
   button.addEventListener("click", () => setControlMode(button.dataset.controlMode));
 });
 
+elements.estimateModeButtons.forEach((button) => {
+  button.addEventListener("click", () => setEstimateMode(button.dataset.estimateMode));
+});
+
 elements.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setTab(button.dataset.tab));
 });
@@ -579,5 +696,7 @@ elements.homeActionButtons.forEach((button) => {
 });
 
 setTab(getStoredTab());
+setEstimateMode(activeEstimateMode);
+updatePnlState();
 syncAllRanges();
 calculate();

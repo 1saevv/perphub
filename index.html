@@ -6,7 +6,7 @@
     <title>PerpHub</title>
     <link rel="icon" type="image/png" sizes="512x512" href="faviconperphub-large.png?v=3" />
     <link rel="apple-touch-icon" href="faviconperphub-large.png?v=3" />
-    <link rel="stylesheet" href="styles.css?v=86" />
+    <link rel="stylesheet" href="styles.css?v=88" />
   </head>
   <body>
     <main class="app-shell">
@@ -76,28 +76,45 @@
           <section class="panel inputs-panel">
             <div class="panel-head">
               <h2>Inputs</h2>
-              <div class="control-mode compact" aria-label="Input mode">
+              <div class="control-mode compact input-mode" aria-label="Input style">
                 <button class="control-mode-button active" type="button" data-control-mode="manual">Manual</button>
                 <button class="control-mode-button" type="button" data-control-mode="sliders">Sliders</button>
               </div>
             </div>
 
+            <div class="mode-field">
+              <span>Calculation basis</span>
+              <div class="control-mode estimate-mode" aria-label="Calculation basis">
+                <button class="control-mode-button active" type="button" data-estimate-mode="season">Season Total</button>
+                <button class="control-mode-button" type="button" data-estimate-mode="weekly">Weekly Pace</button>
+              </div>
+            </div>
+
             <div class="input-grid">
               <label class="field">
-                <span>Your Points</span>
+                <span id="userPointsLabel">Your Points</span>
                 <input id="userPoints" type="number" min="0" step="0.01" inputmode="decimal" value="16.8" />
               </label>
 
-              <label class="field money-field">
+              <label class="field money-field price-field">
                 <span>LIT Price</span>
                 <b>$</b>
                 <input id="litPrice" type="number" min="0" step="0.01" inputmode="decimal" value="4.7" />
+              </label>
+
+              <label class="field money-field pnl-field">
+                <span class="pnl-toggle-label">
+                  <input id="includePnl" type="checkbox" />
+                  <span>Trading PnL</span>
+                </span>
+                <b>$</b>
+                <input id="tradingPnl" type="number" step="0.01" inputmode="decimal" value="0" disabled />
               </label>
             </div>
 
             <div class="manual-controls">
               <label class="field">
-                <span>Estimated Total Season Points</span>
+                <span id="totalPointsLabel">Estimated Total Season Points</span>
                 <input id="manualTotalPoints" type="number" min="0" step="1" inputmode="decimal" value="250000" />
               </label>
             </div>
@@ -105,13 +122,13 @@
             <div class="slider-controls">
               <div class="slider-field">
                 <div class="slider-head">
-                  <label for="manualTotalPointsRange">Estimated Total Season Points</label>
+                  <label id="totalPointsRangeLabel" for="manualTotalPointsRange">Estimated Total Season Points</label>
                   <output id="manualTotalPointsOutput">250K</output>
                 </div>
                 <input id="manualTotalPointsRange" type="range" min="100000" max="5000000" step="50000" value="250000" />
                 <div class="range-meta">
-                  <span>100K points</span>
-                  <span>5M points</span>
+                  <span id="totalPointsMinLabel">100K points</span>
+                  <span id="totalPointsMaxLabel">5M points</span>
                 </div>
               </div>
 
@@ -158,8 +175,14 @@
               </article>
 
               <article class="result-card compact">
-                <span>Your Share of Total Points</span>
+                <span id="userShareLabel">Your Share of Total Points</span>
                 <strong id="userShare">0.006720%</strong>
+              </article>
+
+              <article class="result-card compact net-profit-card">
+                <span>Net Profit incl. PnL</span>
+                <strong id="netProfit">$3,474.24</strong>
+                <em id="pnlBreakdown">Drop + $0.00 PnL</em>
               </article>
             </div>
           </section>
@@ -438,16 +461,16 @@
 
             <div class="share-metrics">
               <div>
-                <span>USD Value</span>
+                <span>USD Drop</span>
                 <strong id="shareUsd">$3,474.24</strong>
               </div>
               <div>
-                <span>Your Points</span>
-                <strong id="sharePoints">16.8</strong>
+                <span>Trading PnL</span>
+                <strong id="sharePnl">$0.00</strong>
               </div>
               <div>
-                <span>Total Points</span>
-                <strong id="shareTotalPoints">250K</strong>
+                <span>Net Profit</span>
+                <strong id="shareNetProfit">$3,474.24</strong>
               </div>
               <div>
                 <span>LIT Price</span>
@@ -470,7 +493,7 @@
       </div>
     </div>
 
-    <script src="script.js?v=48"></script>
+    <script src="script.js?v=50"></script>
     <!-- Cloudflare Web Analytics -->
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"d7d23764b1354852ac3a3bdd535f8315"}'></script>
     <!-- End Cloudflare Web Analytics -->
