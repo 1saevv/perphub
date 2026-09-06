@@ -1,0 +1,7 @@
+.DS_Store
+Thumbs.db
+
+# Local editor/runtime files
+.env
+.env.*
+*.log

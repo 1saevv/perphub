@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PerpHub</title>
+    <link rel="icon" type="image/png" sizes="512x512" href="faviconperphub-large.png?v=3" />
+    <link rel="apple-touch-icon" href="faviconperphub-large.png?v=3" />
+    <link rel="stylesheet" href="styles.css?v=80" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <button class="brand" type="button" id="homeLogoButton" aria-label="Open home">
+          <img class="brand-logo" src="perphubbbbb.png" alt="PerpHub" />
+        </button>
+
+        <nav class="tabs" aria-label="Tools">
+          <button class="tab-button" type="button" data-tab="calculator">Lighter</button>
+          <button class="tab-button" type="button" data-tab="vooi">Vooi</button>
+          <button class="tab-button wide-label" type="button" data-tab="boost">Boost</button>
+        </nav>
+
+        <a class="contact-link" href="https://x.com/1saevv" target="_blank" rel="noreferrer">Contact</a>
+      </header>
+
+      <nav class="mobile-tabs" aria-label="Mobile tools">
+        <button class="tab-button" type="button" data-tab="calculator">Lighter</button>
+        <button class="tab-button" type="button" data-tab="vooi">Vooi</button>
+        <button class="tab-button wide-label" type="button" data-tab="boost">Boost</button>
+      </nav>
+
+      <section class="tab-panel active" id="homeTab">
+        <section class="home-card">
+          <div class="home-card-top">
+            <div class="home-logo-stack" aria-hidden="true">
+              <img src="Extendedlogo.jpg" alt="" />
+              <img src="hyperlogo.jpg" alt="" />
+              <img src="vooilogoforPerpHub.jpg" alt="" />
+              <img src="ostiumlogo.jpg" alt="" />
+              <img src="entropylogo.jpg" alt="" />
+              <img src="lighterlogo.jpg" alt="" />
+              <img src="sailogo.jpg" alt="" />
+            </div>
+            <img class="home-brand-logo" src="perphubbbbb.png" alt="PerpHub" />
+          </div>
+          <p class="kicker">PerpHub</p>
+          <h1>Made for fun. Maybe someone finds it useful.</h1>
+          <div class="home-signal-row" aria-label="PerpHub sections">
+            <span>Points calculator</span>
+            <span>Trading strategies</span>
+            <span>Referral boosts</span>
+          </div>
+          <div class="home-actions">
+            <button class="home-action primary" type="button" data-home-target="calculator">Lighter calculator</button>
+            <button class="home-action" type="button" data-home-target="vooi">Strategies</button>
+            <button class="home-action" type="button" data-home-target="boost">Boosts</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="calculatorTab">
+        <section class="hero-row">
+          <div>
+            <h1>Lighter Points Desk</h1>
+            <p class="hero-subtitle">Turn your Lighter points into a clear LIT and USD estimate based on your inputs.</p>
+          </div>
+
+          <article class="pool-card">
+            <span>Total reward pool</span>
+            <strong id="rewardPoolLabel">11,000,000 LIT</strong>
+          </article>
+        </section>
+
+        <section class="calculator-grid">
+          <section class="panel inputs-panel">
+            <div class="panel-head">
+              <h2>Inputs</h2>
+              <div class="control-mode compact" aria-label="Input mode">
+                <button class="control-mode-button active" type="button" data-control-mode="manual">Manual</button>
+                <button class="control-mode-button" type="button" data-control-mode="sliders">Sliders</button>
+              </div>
+            </div>
+
+            <div class="input-grid">
+              <label class="field">
+                <span>Your Points</span>
+                <input id="userPoints" type="number" min="0" step="0.01" inputmode="decimal" value="16.8" />
+              </label>
+
+              <label class="field money-field">
+                <span>LIT Price</span>
+                <b>$</b>
+                <input id="litPrice" type="number" min="0" step="0.01" inputmode="decimal" value="4.7" />
+              </label>
+            </div>
+
+            <div class="manual-controls">
+              <label class="field">
+                <span>Estimated Total Season Points</span>
+                <input id="manualTotalPoints" type="number" min="0" step="1" inputmode="decimal" value="250000" />
+              </label>
+            </div>
+
+            <div class="slider-controls">
+              <div class="slider-field">
+                <div class="slider-head">
+                  <label for="manualTotalPointsRange">Estimated Total Season Points</label>
+                  <output id="manualTotalPointsOutput">250K</output>
+                </div>
+                <input id="manualTotalPointsRange" type="range" min="100000" max="5000000" step="50000" value="250000" />
+                <div class="range-meta">
+                  <span>100K points</span>
+                  <span>5M points</span>
+                </div>
+              </div>
+
+              <div class="slider-field">
+                <div class="slider-head">
+                  <label for="litPriceRange">LIT price</label>
+                  <output id="litPriceOutput">$4.70</output>
+                </div>
+                <input id="litPriceRange" type="range" min="0.5" max="20" step="0.1" value="4.7" />
+                <div class="range-meta">
+                  <span>$0.50</span>
+                  <span>$20.00</span>
+                </div>
+              </div>
+            </div>
+
+            <input class="hidden" id="rewardPool" type="number" value="11000000" />
+          </section>
+
+          <section class="panel results-panel">
+            <div class="panel-head">
+              <h2>Results</h2>
+              <div class="result-actions">
+                <button class="share-button" id="copyButton" type="button">Share</button>
+                <a class="trade-button" href="https://robinhoodchain.lighter.xyz/?referral=PERP&source=none" target="_blank" rel="noreferrer">Open Lighter x Robinhood</a>
+              </div>
+            </div>
+
+            <div class="results-grid">
+              <article class="result-card">
+                <span>Estimated LIT Allocation</span>
+                <strong id="estimatedLit">739.2 LIT</strong>
+              </article>
+
+              <article class="result-card">
+                <span>Estimated USD Value</span>
+                <strong id="estimatedUsd">$3,474.24</strong>
+              </article>
+
+              <article class="result-card compact">
+                <span>Estimated Value per Point</span>
+                <strong id="valuePerPointLit">44 LIT / point</strong>
+                <em id="valuePerPointUsd">$206.80 / point</em>
+              </article>
+
+              <article class="result-card compact">
+                <span>Your Share of Total Points</span>
+                <strong id="userShare">0.006720%</strong>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="scenario-grid">
+          <section class="panel">
+            <h2>What if LIT price changes?</h2>
+            <div class="table-like" id="priceScenarios"></div>
+          </section>
+
+          <section class="panel chart-panel" aria-hidden="true">
+            <svg viewBox="0 0 900 260" role="img">
+              <g id="chartGrid"></g>
+            </svg>
+          </section>
+        </section>
+
+      </section>
+
+      <section class="tab-panel" id="vooiTab">
+        <section class="vooi-intro">
+          <div>
+            <h1>Farm perp points with VOOI</h1>
+            <p>Use VOOI to find delta-neutral setups across perp DEXs and turn hedged positions into points farming on <span>Lighter x Robinhood</span>, <span>Extended</span>, <span>Kinetiq</span>, <span>Ostium</span> and other ecosystems.</p>
+          </div>
+          <img src="vooilogoforPerpHub.jpg" alt="VOOI" loading="lazy" />
+        </section>
+
+        <section class="vooi-layout">
+          <aside class="panel vooi-nav-panel">
+            <p class="kicker">Strategy guide</p>
+            <nav class="vooi-section-nav" aria-label="VOOI guide sections">
+              <a href="#vooi-what-it-is"><span>01</span>VOOI — What It Is &amp; Why I Use It</a>
+              <a href="#vooi-arbitrage-desk"><span>02</span>Arbitrage Desk — How It Works</a>
+              <a href="#vooi-delta-neutral"><span>03</span>Delta-Neutral Points Farming Strategy</a>
+              <a href="#vooi-manage-position"><span>04</span>How to Open &amp; Manage the Position</a>
+              <a href="#vooi-risks"><span>05</span>Risks &amp; Important Notes</a>
+            </nav>
+          </aside>
+
+          <section class="vooi-content">
+            <article class="panel vooi-section" id="vooi-what-it-is">
+              <h2>VOOI — What It Is &amp; Why I Use It</h2>
+              <p>VOOI is a perp DEX aggregator that brings multiple decentralized perpetual exchanges into one place. Instead of opening several platforms separately, you can use VOOI to access different markets and compare opportunities from a single interface.</p>
+              <p>I’ve personally been using VOOI for more than two years, including while farming Lighter, Orderly, Overlay and other perp ecosystems.</p>
+              <p>For this strategy, the most useful part of VOOI is Arbitrage Desk.</p>
+              <a class="vooi-start-button" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">Start here</a>
+            </article>
+
+            <article class="panel vooi-section" id="vooi-arbitrage-desk">
+              <h2>Arbitrage Desk — How It Works</h2>
+              <img class="vooi-section-image" src="Screenshot 2026-09-05 at 22.55.17.png" alt="VOOI Arbitrage Desk" loading="lazy" />
+              <p>Arbitrage Desk is basically a scanner for potential delta-neutral setups across different perp DEXs.</p>
+              <p>Instead of manually opening multiple exchanges and comparing the same market, the desk puts the important numbers in one place:</p>
+              <ul>
+                <li>Long / Short venues — where each leg can be opened</li>
+                <li>Funding rates — what each side currently pays or receives</li>
+                <li>Spread — the difference between prices across venues</li>
+                <li>Estimated APR — the current estimated return of the setup</li>
+              </ul>
+              <p>For example, you might find a setup where the desk suggests going Long ETH on one DEX and Short ETH on another.</p>
+              <p>The important part: don’t automatically choose the highest APR.</p>
+              <p>APR and funding rates can change quickly. I also look at the venues involved, liquidity, spread and — for points farming — whether either side has an active points program.</p>
+            </article>
+
+            <article class="panel vooi-section" id="vooi-delta-neutral">
+              <h2>Delta-Neutral Points Farming Strategy</h2>
+              <img class="vooi-section-image" src="Screenshot 2026-09-05 at 22.57.44.png" alt="Delta-neutral points farming setup" loading="lazy" />
+              <p>This is where we turn a normal arbitrage setup into a points-farming strategy.</p>
+              <p>The basic structure is:</p>
+              <div class="vooi-example">
+                <span>DEX A → LONG $5,000 BTC</span>
+                <span>DEX B → SHORT $5,000 BTC</span>
+              </div>
+              <p>Both positions use the same asset and approximately the same notional size.</p>
+              <p>If BTC goes up, the long gains while the short loses. If BTC goes down, the short gains while the long loses.</p>
+              <p>The two legs therefore offset most of the directional exposure.</p>
+              <p>But there is another layer.</p>
+              <p>Instead of choosing two random DEXs, I prefer setups where at least one — and ideally both — legs are connected to points or incentive programs.</p>
+              <p>For example:</p>
+              <div class="vooi-example">
+                <span>Lighter × Robinhood → LONG HYPE → farming Lighter points</span>
+                <span>Another points DEX → SHORT HYPE → farming its points</span>
+              </div>
+              <p>Now the hedge itself is productive.</p>
+              <p>One leg farms one program, the second leg farms another, while the positions largely hedge each other’s directional exposure.</p>
+            </article>
+
+            <article class="panel vooi-section" id="vooi-manage-position">
+              <h2>How to Open &amp; Manage the Position</h2>
+              <div class="vooi-video" id="vooiVideo" data-youtube-id="fi7HWErK3h0"></div>
+              <p>Here is the actual process I use.</p>
+              <h3>Step 1 — Open VOOI Arbitrage Desk</h3>
+              <p>Look through the available setups and choose an asset that is available on two venues you want to use.</p>
+              <p>For points farming, I prioritize combinations where one or both venues have incentives I want to farm.</p>
+              <h3>Step 2 — Check the Setup</h3>
+              <p>Before entering, check:</p>
+              <ul>
+                <li>which venue is Long and which is Short</li>
+                <li>funding on both sides</li>
+                <li>spread</li>
+                <li>estimated APR</li>
+                <li>liquidity</li>
+                <li>active points/incentives</li>
+              </ul>
+              <p>The highest APR is not necessarily the best opportunity.</p>
+              <h3>Step 3 — Decide Your Position Size</h3>
+              <p>Both legs should have approximately the same notional value.</p>
+              <p>For example:</p>
+              <div class="vooi-example">
+                <span>Long HYPE → $5,000</span>
+                <span>Short HYPE → $5,000</span>
+              </div>
+              <p>Be careful with leverage here.</p>
+              <p>If you deposit $1,000 and use 5x leverage, your position is approximately $5,000 — so you need to compare the actual position notional, not just the collateral deposited.</p>
+              <h3>Step 4 — Open Both Legs</h3>
+              <p>Open the Long and Short as close together as possible.</p>
+              <p>Once both positions are live, check that the notional sizes are approximately equal. If one side is significantly larger, you still have directional exposure.</p>
+              <h3>Step 5 — Let the Strategy Work</h3>
+              <p>Once the hedge is established, both positions can generate trading activity while the funding component of the setup continues to work.</p>
+              <p>If both venues have points programs, both legs can farm simultaneously.</p>
+              <h3>Step 6 — Monitor the Setup</h3>
+              <p>You don’t need to predict every market move, but you still need to monitor the position.</p>
+              <p>Watch the funding rates, APR, spread, margin and size of both legs.</p>
+              <p>If funding changes significantly, the APR disappears, the spread becomes unattractive or one leg becomes unbalanced, it may be time to rebalance or close the setup.</p>
+              <p>When exiting, remember to close both legs. Otherwise, you are left with a directional position.</p>
+            </article>
+
+            <article class="panel vooi-section" id="vooi-risks">
+              <h2>Risks &amp; Important Notes</h2>
+              <p>Delta-neutral does not mean risk-free.</p>
+              <p>The strategy reduces directional exposure, but there are still several things you need to keep in mind:</p>
+              <ul>
+                <li>Funding can change — a profitable setup can become less attractive or even turn negative.</li>
+                <li>Liquidation is still possible — each leg has its own margin and liquidation price. Don’t forget to set TP/SL and monitor both positions.</li>
+                <li>Spreads can change — prices can diverge between DEXs and affect the final result.</li>
+                <li>Points are speculative — their future value and potential rewards are not guaranteed.</li>
+                <li>APR is not fixed — it is calculated based on current conditions and can change quickly.</li>
+              </ul>
+              <p>The goal of the strategy isn’t to remove every possible risk.</p>
+              <p>The goal is to reduce dependence on market direction while using both sides of the hedge as efficiently as possible.</p>
+            </article>
+          </section>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="boostTab">
+        <section class="boost-intro">
+          <div>
+            <h1>Boost Hub</h1>
+            <p>Referral boosts and cashback for perp traders.</p>
+          </div>
+        </section>
+
+        <section class="boost-map" aria-label="DEX rewards and boosts">
+          <article class="boost-tile extended-tile wide" data-mark="10%">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="Extendedlogo.jpg" alt="Extended" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://app.extended.exchange/join/1SAEVV" target="_blank" rel="noreferrer">Trade</a>
+                <a class="boost-button" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">VOOI boost</a>
+              </div>
+              <span>Direct + VOOI</span>
+            </div>
+            <h2>Extended</h2>
+            <div class="boost-value">
+              <span>10% commission discount</span>
+              <span class="vooi-boost-line">+15% Points Boost via VOOI</span>
+            </div>
+          </article>
+
+          <article class="boost-tile compact" data-mark="4%">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="hyperlogo.jpg" alt="Hyperliquid" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://app.hyperliquid.xyz/join/PERPHUB" target="_blank" rel="noreferrer">Trade</a>
+              </div>
+              <span>Direct</span>
+            </div>
+            <h2>Hyperliquid</h2>
+            <div class="boost-value"><span>4% trading fee discount</span></div>
+          </article>
+
+          <article class="boost-tile tall" data-mark="40%">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="vooilogoforPerpHub.jpg" alt="VOOI" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">Trade</a>
+              </div>
+              <span>Aggregator</span>
+            </div>
+            <h2>VOOI</h2>
+            <div class="boost-value">
+              <span>40% fee cashback</span>
+              <small>Get 40% of VOOI fees returned back to you.</small>
+            </div>
+          </article>
+
+          <article class="boost-tile compact" data-mark="12%">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="ostiumlogo.jpg" alt="Ostium" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">Trade</a>
+              </div>
+              <span>VOOI route</span>
+            </div>
+            <h2>Ostium</h2>
+            <div class="boost-value"><span class="vooi-boost-line">+12% VOOI Pro points boost</span></div>
+          </article>
+
+          <article class="boost-tile compact" data-mark="120">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="entropylogo.jpg" alt="Entropy" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://entropy.io/?r=1saevv" target="_blank" rel="noreferrer">Trade</a>
+              </div>
+              <span>Rebate</span>
+            </div>
+            <h2>Entropy</h2>
+            <div class="boost-value"><span>120% rebate</span></div>
+          </article>
+
+          <article class="boost-tile wide" data-mark="TOP">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="lighterlogo.jpg" alt="Lighter x Robinhood" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://robinhoodchain.lighter.xyz/?referral=PERP&source=none" target="_blank" rel="noreferrer">Trade</a>
+              </div>
+              <span>Private</span>
+            </div>
+            <h2>Lighter x Robinhood</h2>
+            <div class="boost-value">
+              <span>Private cashback for top referrals</span>
+              <small>Monthly cashback pool distribution among my referrals.</small>
+            </div>
+          </article>
+
+          <article class="boost-tile mini" data-mark="20%">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="sailogo.jpg" alt="SAI" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://sai.fun/perps?ref=PERPHUB" target="_blank" rel="noreferrer">Trade</a>
+              </div>
+              <span>Direct</span>
+            </div>
+            <h2>SAI</h2>
+            <div class="boost-value">
+              <span>20% fee discount</span>
+              <span class="vooi-boost-line">Points Boost</span>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <div class="share-modal hidden" id="shareModal" aria-hidden="true">
+      <div class="share-dialog" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+        <div class="share-dialog-head">
+          <h2 id="shareTitle">Share card</h2>
+          <button class="icon-button" id="shareCloseButton" type="button" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="share-card" id="shareCard">
+          <div class="share-card-grid"></div>
+          <div class="share-card-content">
+            <div class="share-brand">
+              <img src="perphubbbbb.png" alt="PerpHub" loading="lazy" />
+              <img class="share-program-logo" src="logoRL.png" alt="Lighter x Robinhood" loading="lazy" />
+            </div>
+
+            <div class="share-primary">
+              <span>Estimated LIT Allocation</span>
+              <strong id="shareLit">739.2 LIT</strong>
+            </div>
+
+            <div class="share-metrics">
+              <div>
+                <span>USD Value</span>
+                <strong id="shareUsd">$3,474.24</strong>
+              </div>
+              <div>
+                <span>Your Points</span>
+                <strong id="sharePoints">16.8</strong>
+              </div>
+              <div>
+                <span>Total Points</span>
+                <strong id="shareTotalPoints">250K</strong>
+              </div>
+              <div>
+                <span>LIT Price</span>
+                <strong id="sharePrice">$4.70</strong>
+              </div>
+            </div>
+
+            <div class="share-footer">
+              <span id="shareValuePoint">44 LIT / point</span>
+              <span>perphub.xyz</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="share-actions">
+          <button class="share-action-button" id="saveCardButton" type="button">Save Card</button>
+          <button class="share-action-button" id="copyCardButton" type="button">Copy Image</button>
+          <button class="share-action-button primary" id="shareXButton" type="button">Share on X</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js?v=40"></script>
+  </body>
+</html>
