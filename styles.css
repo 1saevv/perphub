@@ -118,6 +118,11 @@ a {
   object-fit: cover;
 }
 
+.boost-tab-icon {
+  width: 20px;
+  height: 20px;
+}
+
 .tab-button.active {
   color: var(--accent);
   border-bottom-color: var(--accent);
@@ -1582,6 +1587,11 @@ input[type="range"]::-webkit-slider-thumb {
     width: 20px;
     height: 20px;
     border-radius: 6px;
+  }
+
+  .boost-tab-icon {
+    width: 18px;
+    height: 18px;
   }
 
   .tab-button.active {
