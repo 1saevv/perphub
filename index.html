@@ -16,18 +16,39 @@
         </button>
 
         <nav class="tabs" aria-label="Tools">
-          <button class="tab-button" type="button" data-tab="calculator">Lighter</button>
-          <button class="tab-button" type="button" data-tab="vooi">Vooi</button>
-          <button class="tab-button wide-label" type="button" data-tab="boost">Boost</button>
+          <button class="tab-button" type="button" data-tab="calculator">
+            <img class="tab-icon" src="lighterlogoforhedder.png" alt="" />
+            <span>Lighter</span>
+          </button>
+          <button class="tab-button" type="button" data-tab="vooi">
+            <img class="tab-icon" src="hedderstrategieslogo.png" alt="" />
+            <span>Strategies</span>
+          </button>
+          <button class="tab-button wide-label" type="button" data-tab="boost">
+            <img class="tab-icon" src="boostshedder.png" alt="" />
+            <span>Boost</span>
+          </button>
         </nav>
 
-        <a class="contact-link" href="https://x.com/1saevv" target="_blank" rel="noreferrer">Contact</a>
+        <div class="topbar-actions">
+          <button class="coffee-link" id="coffeeButton" type="button">Buy me a coffee</button>
+          <a class="contact-link" href="https://x.com/1saevv" target="_blank" rel="noreferrer">Contact</a>
+        </div>
       </header>
 
       <nav class="mobile-tabs" aria-label="Mobile tools">
-        <button class="tab-button" type="button" data-tab="calculator">Lighter</button>
-        <button class="tab-button" type="button" data-tab="vooi">Vooi</button>
-        <button class="tab-button wide-label" type="button" data-tab="boost">Boost</button>
+        <button class="tab-button" type="button" data-tab="calculator">
+          <img class="tab-icon" src="lighterlogoforhedder.png" alt="" />
+          <span>Lighter</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="vooi">
+          <img class="tab-icon" src="hedderstrategieslogo.png" alt="" />
+          <span>Strategies</span>
+        </button>
+        <button class="tab-button wide-label" type="button" data-tab="boost">
+          <img class="tab-icon" src="boostshedder.png" alt="" />
+          <span>Boost</span>
+        </button>
       </nav>
 
       <section class="tab-panel active" id="homeTab">
@@ -493,7 +514,38 @@
       </div>
     </div>
 
-    <script src="script.js?v=50"></script>
+    <div class="coffee-modal hidden" id="coffeeModal" aria-hidden="true">
+      <div class="coffee-dialog" role="dialog" aria-modal="true" aria-labelledby="coffeeTitle">
+        <div class="share-dialog-head">
+          <h2 id="coffeeTitle">Buy me a coffee</h2>
+          <button class="icon-button" id="coffeeCloseButton" type="button" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="coffee-body">
+          <p>If PerpHub saved you time, you can send a small thanks here. Every bit helps keep it independent.</p>
+
+          <div class="wallet-list">
+            <article class="wallet-row">
+              <div>
+                <span>EVM address (ETH, Base, Arbitrum, Optimism, Polygon, BNB)</span>
+                <strong id="evmWalletLabel">0xde2a8b100ffB2f957d008DC28661A9E20A7AF7f4</strong>
+              </div>
+              <button class="wallet-copy-button" type="button" data-wallet-copy="evm">Copy</button>
+            </article>
+
+            <article class="wallet-row">
+              <div>
+                <span>Solana address</span>
+                <strong id="solanaWalletLabel">GZVssHZt4YCnicAMT5HGB5btZBZt6dLghdGn8rADDGzX</strong>
+              </div>
+              <button class="wallet-copy-button" type="button" data-wallet-copy="solana">Copy</button>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js?v=51"></script>
     <!-- Cloudflare Web Analytics -->
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"d7d23764b1354852ac3a3bdd535f8315"}'></script>
     <!-- End Cloudflare Web Analytics -->

@@ -1,5 +1,9 @@
 const DEFAULT_REWARD_POOL_LIT = 11000000;
 const ACTIVE_TAB_STORAGE_KEY = "perphub.activeTab";
+const DONATION_WALLETS = {
+  evm: "0xde2a8b100ffB2f957d008DC28661A9E20A7AF7f4",
+  solana: "GZVssHZt4YCnicAMT5HGB5btZBZt6dLghdGn8rADDGzX",
+};
 
 const defaults = {
   userPoints: 16.8,
@@ -94,6 +98,12 @@ const elements = {
   saveCardButton: document.querySelector("#saveCardButton"),
   copyCardButton: document.querySelector("#copyCardButton"),
   shareXButton: document.querySelector("#shareXButton"),
+  coffeeButton: document.querySelector("#coffeeButton"),
+  coffeeModal: document.querySelector("#coffeeModal"),
+  coffeeCloseButton: document.querySelector("#coffeeCloseButton"),
+  evmWalletLabel: document.querySelector("#evmWalletLabel"),
+  solanaWalletLabel: document.querySelector("#solanaWalletLabel"),
+  walletCopyButtons: document.querySelectorAll("[data-wallet-copy]"),
 };
 
 const numberFormatter = new Intl.NumberFormat("en-US", {
@@ -391,6 +401,16 @@ function closeShareCard() {
   elements.shareModal.setAttribute("aria-hidden", "true");
 }
 
+function openCoffeeModal() {
+  elements.coffeeModal.classList.remove("hidden");
+  elements.coffeeModal.setAttribute("aria-hidden", "false");
+}
+
+function closeCoffeeModal() {
+  elements.coffeeModal.classList.add("hidden");
+  elements.coffeeModal.setAttribute("aria-hidden", "true");
+}
+
 function loadImage(src) {
   return new Promise((resolve) => {
     const image = new Image();
@@ -549,6 +569,35 @@ async function copyResults() {
   }
 }
 
+async function copyWallet(walletKey, button) {
+  const wallet = DONATION_WALLETS[walletKey];
+  const isPlaceholder = !wallet || wallet.startsWith("PASTE_");
+
+  if (isPlaceholder) {
+    button.textContent = "Add address";
+    setTimeout(() => {
+      button.textContent = "Copy";
+    }, 1400);
+    return;
+  }
+
+  try {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(wallet);
+    } else {
+      copyWithFallback(wallet);
+    }
+    button.textContent = "Copied";
+  } catch {
+    copyWithFallback(wallet);
+    button.textContent = "Copied";
+  }
+
+  setTimeout(() => {
+    button.textContent = "Copy";
+  }, 1400);
+}
+
 function copyWithFallback(text) {
   const textarea = document.createElement("textarea");
   textarea.value = text;
@@ -665,12 +714,20 @@ elements.shareCloseButton.addEventListener("click", closeShareCard);
 elements.saveCardButton.addEventListener("click", saveShareImage);
 elements.copyCardButton.addEventListener("click", copyShareImage);
 elements.shareXButton.addEventListener("click", shareOnX);
+elements.coffeeButton.addEventListener("click", openCoffeeModal);
+elements.coffeeCloseButton.addEventListener("click", closeCoffeeModal);
 elements.shareModal.addEventListener("click", (event) => {
   if (event.target === elements.shareModal) closeShareCard();
 });
+elements.coffeeModal.addEventListener("click", (event) => {
+  if (event.target === elements.coffeeModal) closeCoffeeModal();
+});
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeShareCard();
+  if (event.key === "Escape") {
+    closeShareCard();
+    closeCoffeeModal();
+  }
 });
 
 window.addEventListener("resize", calculate);
@@ -693,6 +750,12 @@ if (elements.homeLogoButton) {
 
 elements.homeActionButtons.forEach((button) => {
   button.addEventListener("click", () => setTab(button.dataset.homeTarget));
+});
+
+elements.evmWalletLabel.textContent = DONATION_WALLETS.evm;
+elements.solanaWalletLabel.textContent = DONATION_WALLETS.solana;
+elements.walletCopyButtons.forEach((button) => {
+  button.addEventListener("click", () => copyWallet(button.dataset.walletCopy, button));
 });
 
 setTab(getStoredTab());
