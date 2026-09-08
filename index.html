@@ -6,7 +6,7 @@
     <title>PerpHub</title>
     <link rel="icon" type="image/png" sizes="512x512" href="faviconperphub-large.png?v=3" />
     <link rel="apple-touch-icon" href="faviconperphub-large.png?v=3" />
-    <link rel="stylesheet" href="styles.css?v=88" />
+    <link rel="stylesheet" href="styles.css?v=118" />
   </head>
   <body>
     <main class="app-shell">
@@ -28,6 +28,10 @@
             <img class="tab-icon boost-tab-icon" src="boostshedder.png" alt="" />
             <span>Boost</span>
           </button>
+          <button class="tab-button" type="button" data-tab="wheel">
+            <img class="tab-icon" src="wheellogo.png" alt="" />
+            <span>Wheel</span>
+          </button>
         </nav>
 
         <div class="topbar-actions">
@@ -48,6 +52,10 @@
         <button class="tab-button wide-label" type="button" data-tab="boost">
           <img class="tab-icon boost-tab-icon" src="boostshedder.png" alt="" />
           <span>Boost</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="wheel">
+          <img class="tab-icon" src="wheellogo.png" alt="" />
+          <span>Wheel</span>
         </button>
       </nav>
 
@@ -71,11 +79,13 @@
             <span>Points calculator</span>
             <span>Trading strategies</span>
             <span>Referral boosts</span>
+            <span>Perp wheel</span>
           </div>
           <div class="home-actions">
             <button class="home-action primary" type="button" data-home-target="calculator">Lighter calculator</button>
             <button class="home-action" type="button" data-home-target="vooi">Strategies</button>
             <button class="home-action" type="button" data-home-target="boost">Boosts</button>
+            <button class="home-action" type="button" data-home-target="wheel">Wheel</button>
           </div>
         </section>
       </section>
@@ -458,6 +468,118 @@
           </article>
         </section>
       </section>
+
+      <section class="tab-panel" id="wheelTab">
+        <section class="wheel-intro">
+          <div>
+            <h1>Perp Wheel</h1>
+            <p>Your daily perp prophecy.</p>
+          </div>
+        </section>
+
+        <section class="wheel-layout">
+          <section class="wheel-stage">
+            <div class="wheel-wrap">
+              <div class="wheel-pointer" aria-hidden="true"></div>
+              <svg class="fortune-wheel" id="fortuneWheel" viewBox="0 0 400 400" role="img" aria-label="Perp Wheel with 10 equal sections">
+                <defs>
+                  <radialGradient id="wheelWood" cx="50%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#8a5830" />
+                    <stop offset="58%" stop-color="#4b2d18" />
+                    <stop offset="100%" stop-color="#21130b" />
+                  </radialGradient>
+                  <radialGradient id="wheelLamp" cx="35%" cy="30%" r="65%">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="45%" stop-color="#fff5bd" />
+                    <stop offset="100%" stop-color="#ffbd2e" />
+                  </radialGradient>
+                  <radialGradient id="wheelCenter" cx="50%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#1d2d5f" />
+                    <stop offset="72%" stop-color="#09266a" />
+                    <stop offset="100%" stop-color="#061942" />
+                  </radialGradient>
+                  <filter id="softWheelShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000000" flood-opacity="0.38" />
+                  </filter>
+                </defs>
+                <circle class="wheel-outer" cx="200" cy="200" r="188" />
+                <circle class="wheel-inner-ring" cx="200" cy="200" r="170" />
+                <g class="wheel-slices" filter="url(#softWheelShadow)">
+                  <path class="wheel-slice slice-1" d="M 200 200 L 149.32 44.03 A 164 164 0 0 1 250.68 44.03 Z" />
+                  <path class="wheel-slice slice-2" d="M 200 200 L 250.68 44.03 A 164 164 0 0 1 332.68 103.60 Z" />
+                  <path class="wheel-slice slice-3" d="M 200 200 L 332.68 103.60 A 164 164 0 0 1 364.00 200.00 Z" />
+                  <path class="wheel-slice slice-4" d="M 200 200 L 364.00 200.00 A 164 164 0 0 1 332.68 296.40 Z" />
+                  <path class="wheel-slice slice-5" d="M 200 200 L 332.68 296.40 A 164 164 0 0 1 250.68 355.97 Z" />
+                  <path class="wheel-slice slice-6" d="M 200 200 L 250.68 355.97 A 164 164 0 0 1 149.32 355.97 Z" />
+                  <path class="wheel-slice slice-7" d="M 200 200 L 149.32 355.97 A 164 164 0 0 1 67.32 296.40 Z" />
+                  <path class="wheel-slice slice-8" d="M 200 200 L 67.32 296.40 A 164 164 0 0 1 36.00 200.00 Z" />
+                  <path class="wheel-slice slice-9" d="M 200 200 L 36.00 200.00 A 164 164 0 0 1 67.32 103.60 Z" />
+                  <path class="wheel-slice slice-10" d="M 200 200 L 67.32 103.60 A 164 164 0 0 1 149.32 44.03 Z" />
+                </g>
+                <g class="wheel-lamps">
+                  <circle cx="142.52" cy="23.10" r="7" />
+                  <circle cx="257.48" cy="23.10" r="7" />
+                  <circle cx="350.48" cy="90.67" r="7" />
+                  <circle cx="386.00" cy="200.00" r="7" />
+                  <circle cx="350.48" cy="309.33" r="7" />
+                  <circle cx="257.48" cy="376.90" r="7" />
+                  <circle cx="142.52" cy="376.90" r="7" />
+                  <circle cx="49.52" cy="309.33" r="7" />
+                  <circle cx="14.00" cy="200.00" r="7" />
+                  <circle cx="49.52" cy="90.67" r="7" />
+                </g>
+                <g class="wheel-labels">
+                  <text x="200.00" y="88.00">01</text>
+                  <text x="265.83" y="109.39">02</text>
+                  <text x="306.52" y="165.39">03</text>
+                  <text x="306.52" y="234.61">04</text>
+                  <text x="265.83" y="290.61">05</text>
+                  <text x="200.00" y="312.00">06</text>
+                  <text x="134.17" y="290.61">07</text>
+                  <text x="93.48" y="234.61">08</text>
+                  <text x="93.48" y="165.39">09</text>
+                  <text x="134.17" y="109.39">10</text>
+                </g>
+                <circle class="wheel-center" cx="200" cy="200" r="46" />
+              </svg>
+              <button class="wheel-spin-button" id="wheelSpinButton" type="button">Spin</button>
+            </div>
+            <aside class="wheel-result-card hidden" id="wheelResultCard" aria-live="polite">
+              <div class="wheel-card-preview" id="wheelCardPreview">
+                <button class="wheel-card-close" id="wheelCardCloseButton" type="button" aria-label="Close">&times;</button>
+                <div class="wheel-card-grid"></div>
+                <div class="wheel-card-content">
+                  <img src="perphubbbbb.png" alt="PerpHub" loading="lazy" />
+                  <span id="wheelResultTitle">Sector 01</span>
+                  <strong id="wheelResultText">Time to check VOOI Arbitrage Desk.</strong>
+                  <em>perp-hub.com</em>
+                </div>
+              </div>
+              <div class="wheel-card-actions">
+                <button class="wheel-share-button" id="wheelSaveButton" type="button">Save Card</button>
+                <button class="wheel-share-button" id="wheelCopyButton" type="button">Copy Image</button>
+                <button class="wheel-share-button primary" id="wheelShareButton" type="button">Share on X</button>
+              </div>
+            </aside>
+          </section>
+
+          <aside class="wheel-prize-board" aria-label="Perp Wheel prophecies">
+            <p class="kicker">Prophecies</p>
+            <div class="wheel-prize-list">
+              <span><b>01</b>Time to check VOOI Arbitrage Desk.</span>
+              <span><b>02</b>A good day to farm points and post results.</span>
+              <span><b>03</b>Touch grass. You spent too much time at the desk.</span>
+              <span><b>04</b>A good day for a delta-neutral setup.</span>
+              <span><b>05</b>Less volume. More intentional trades.</span>
+              <span><b>06</b>Time to try a new perp DEX.</span>
+              <span><b>07</b>Check X. New alpha might be hiding in plain sight.</span>
+              <span><b>08</b>Today is for discipline, not dopamine.</span>
+              <span><b>09</b>Your edge today is not forcing it.</span>
+              <span><b>10</b>Maybe today is for learning, not earning.</span>
+            </div>
+          </aside>
+        </section>
+      </section>
     </main>
 
     <div class="share-modal hidden" id="shareModal" aria-hidden="true">
@@ -545,7 +667,7 @@
       </div>
     </div>
 
-    <script src="script.js?v=51"></script>
+    <script src="script.js?v=71"></script>
     <!-- Cloudflare Web Analytics -->
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"d7d23764b1354852ac3a3bdd535f8315"}'></script>
     <!-- End Cloudflare Web Analytics -->

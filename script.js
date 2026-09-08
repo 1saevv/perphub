@@ -1,5 +1,22 @@
 const DEFAULT_REWARD_POOL_LIT = 11000000;
 const ACTIVE_TAB_STORAGE_KEY = "perphub.activeTab";
+const tabHashByName = {
+  home: "",
+  calculator: "lighter",
+  vooi: "strategies",
+  boost: "boost",
+  wheel: "wheel",
+};
+const tabNameByHash = {
+  lighter: "calculator",
+  calculator: "calculator",
+  strategies: "vooi",
+  strategy: "vooi",
+  vooi: "vooi",
+  boost: "boost",
+  boosts: "boost",
+  wheel: "wheel",
+};
 const DONATION_WALLETS = {
   evm: "0xde2a8b100ffB2f957d008DC28661A9E20A7AF7f4",
   solana: "GZVssHZt4YCnicAMT5HGB5btZBZt6dLghdGn8rADDGzX",
@@ -86,6 +103,17 @@ const elements = {
   calculatorTab: document.querySelector("#calculatorTab"),
   vooiTab: document.querySelector("#vooiTab"),
   boostTab: document.querySelector("#boostTab"),
+  wheelTab: document.querySelector("#wheelTab"),
+  wheelStage: document.querySelector(".wheel-stage"),
+  fortuneWheel: document.querySelector("#fortuneWheel"),
+  wheelSpinButton: document.querySelector("#wheelSpinButton"),
+  wheelResultCard: document.querySelector("#wheelResultCard"),
+  wheelCardCloseButton: document.querySelector("#wheelCardCloseButton"),
+  wheelResultTitle: document.querySelector("#wheelResultTitle"),
+  wheelResultText: document.querySelector("#wheelResultText"),
+  wheelSaveButton: document.querySelector("#wheelSaveButton"),
+  wheelCopyButton: document.querySelector("#wheelCopyButton"),
+  wheelShareButton: document.querySelector("#wheelShareButton"),
   chartGrid: document.querySelector("#chartGrid"),
   shareModal: document.querySelector("#shareModal"),
   shareCloseButton: document.querySelector("#shareCloseButton"),
@@ -105,6 +133,22 @@ const elements = {
   solanaWalletLabel: document.querySelector("#solanaWalletLabel"),
   walletCopyButtons: document.querySelectorAll("[data-wallet-copy]"),
 };
+
+const wheelSlots = [
+  { title: "Sector 01", text: "Time to check VOOI Arbitrage Desk." },
+  { title: "Sector 02", text: "A good day to farm points and post results." },
+  { title: "Sector 03", text: "Touch grass. You spent too much time at the desk." },
+  { title: "Sector 04", text: "A good day for a delta-neutral setup." },
+  { title: "Sector 05", text: "Less volume. More intentional trades." },
+  { title: "Sector 06", text: "Time to try a new perp DEX." },
+  { title: "Sector 07", text: "Check X. New alpha might be hiding in plain sight." },
+  { title: "Sector 08", text: "Today is for discipline, not dopamine." },
+  { title: "Sector 09", text: "Your edge today is not forcing it." },
+  { title: "Sector 10", text: "Maybe today is for learning, not earning." },
+];
+
+let wheelRotation = 0;
+let latestWheelResult = null;
 
 const numberFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
@@ -141,6 +185,20 @@ function setStoredTab(tabName) {
     localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, tabName);
   } catch {
     // The site should keep working even when browser storage is blocked.
+  }
+}
+
+function tabFromHash() {
+  const hash = window.location.hash.replace(/^#/, "").trim().toLowerCase();
+  return tabNameByHash[hash] ?? null;
+}
+
+function updateTabHash(tabName) {
+  const nextHash = tabHashByName[tabName] ? `#${tabHashByName[tabName]}` : window.location.pathname + window.location.search;
+  const nextUrl = tabHashByName[tabName] ? `${window.location.pathname}${window.location.search}${nextHash}` : nextHash;
+
+  if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== nextUrl) {
+    window.history.replaceState(null, "", nextUrl);
   }
 }
 
@@ -628,8 +686,8 @@ function bindSyncedControl(input, range) {
   });
 }
 
-function setTab(tabName) {
-  const targetTab = ["home", "calculator", "vooi", "boost"].includes(tabName) ? tabName : "home";
+function setTab(tabName, options = {}) {
+  const targetTab = ["home", "calculator", "vooi", "boost", "wheel"].includes(tabName) ? tabName : "home";
   const previousTab = getStoredTab();
 
   elements.tabButtons.forEach((button) => {
@@ -640,7 +698,12 @@ function setTab(tabName) {
   elements.calculatorTab.classList.toggle("active", targetTab === "calculator");
   elements.vooiTab.classList.toggle("active", targetTab === "vooi");
   elements.boostTab.classList.toggle("active", targetTab === "boost");
+  elements.wheelTab.classList.toggle("active", targetTab === "wheel");
   setStoredTab(targetTab);
+
+  if (options.updateHash !== false) {
+    updateTabHash(targetTab);
+  }
 
   if (targetTab === "vooi") {
     loadVooiVideo();
@@ -649,6 +712,187 @@ function setTab(tabName) {
   if (previousTab && previousTab !== targetTab) {
     window.scrollTo({ top: 0, behavior: "auto" });
   }
+}
+
+function spinWheel() {
+  if (!elements.fortuneWheel || !elements.wheelSpinButton) return;
+
+  const slotIndex = Math.floor(Math.random() * wheelSlots.length);
+  const slotSize = 360 / wheelSlots.length;
+  const slotCenter = slotIndex * slotSize;
+  const randomOffset = (Math.random() - 0.5) * (slotSize * 0.62);
+  const targetAngle = (360 - slotCenter - randomOffset) % 360;
+  const currentAngle = ((wheelRotation % 360) + 360) % 360;
+  const fullTurns = 2160 + Math.floor(Math.random() * 3) * 360;
+  const spinDistance = fullTurns + ((targetAngle - currentAngle + 360) % 360);
+  wheelRotation += spinDistance;
+
+  elements.wheelSpinButton.disabled = true;
+  elements.wheelStage?.classList.add("is-spinning");
+  elements.wheelResultCard?.classList.add("hidden");
+  elements.fortuneWheel.style.transform = `rotate(${wheelRotation}deg)`;
+
+  window.setTimeout(() => {
+    latestWheelResult = wheelSlots[slotIndex];
+    elements.wheelResultTitle.textContent = latestWheelResult.title;
+    elements.wheelResultText.textContent = latestWheelResult.text;
+    elements.wheelResultText.classList.toggle("long", latestWheelResult.text.length > 42);
+    elements.wheelResultCard?.classList.remove("hidden");
+    elements.wheelSpinButton.disabled = false;
+    elements.wheelStage?.classList.remove("is-spinning");
+  }, 5300);
+}
+
+function shareWheelResult() {
+  if (!latestWheelResult) return;
+
+  const text = encodeURIComponent(`${latestWheelResult.title}: ${latestWheelResult.text}\nSpun on PerpHub.`);
+  window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank", "noopener,noreferrer");
+}
+
+function closeWheelResultCard() {
+  elements.wheelResultCard?.classList.add("hidden");
+}
+
+function getCanvasTextLines(ctx, text, maxWidth) {
+  const words = text.split(" ");
+  const lines = [];
+  let line = "";
+
+  words.forEach((word) => {
+    const testLine = line ? `${line} ${word}` : word;
+    if (ctx.measureText(testLine).width <= maxWidth) {
+      line = testLine;
+      return;
+    }
+
+    if (line) lines.push(line);
+    line = word;
+  });
+
+  if (line) lines.push(line);
+  return lines;
+}
+
+function fitCanvasWrappedText(ctx, text, maxWidth, startSize, minSize, maxLines) {
+  let size = startSize;
+  let lines = [];
+
+  do {
+    ctx.font = `800 ${size}px Menlo, monospace`;
+    lines = getCanvasTextLines(ctx, text, maxWidth);
+    if (lines.length <= maxLines) break;
+    size -= 2;
+  } while (size >= minSize);
+
+  return { size, lines };
+}
+
+async function drawWheelCard(result) {
+  const canvas = document.createElement("canvas");
+  const scale = 2;
+  const width = 728;
+  const height = 420;
+  const ctx = canvas.getContext("2d");
+  canvas.width = width * scale;
+  canvas.height = height * scale;
+  ctx.scale(scale, scale);
+
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "#07090a");
+  gradient.addColorStop(0.58, "#111113");
+  gradient.addColorStop(1, "#101f08");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  const glow = ctx.createRadialGradient(width * 0.84, height * 0.16, 0, width * 0.84, height * 0.16, 270);
+  glow.addColorStop(0, "rgba(204, 255, 0, 0.22)");
+  glow.addColorStop(1, "rgba(204, 255, 0, 0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = "rgba(204, 255, 0, 0.034)";
+  for (let x = Math.floor(width * 0.34); x < width; x += 10) {
+    for (let y = 0; y < height; y += 10) {
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
+
+  const logo = await loadImage("perphubbbbb.png");
+  if (logo) {
+    ctx.drawImage(logo, 34, 22, 120, 48);
+  } else {
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 24px Menlo, monospace";
+    ctx.fillText("PerpHub", 34, 52);
+  }
+
+  ctx.fillStyle = "rgba(204, 255, 0, 0.12)";
+  ctx.beginPath();
+  ctx.arc(width - 92, 86, 46, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(204, 255, 0, 0.42)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = "#ccff00";
+  ctx.font = "900 26px Menlo, monospace";
+  ctx.textAlign = "center";
+  ctx.fillText(result.title.replace("Sector ", "#"), width - 92, 95);
+  ctx.textAlign = "left";
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.52)";
+  ctx.font = "800 13px Menlo, monospace";
+  ctx.fillText("PERP WHEEL RESULT", 34, 146);
+  ctx.fillStyle = "#ccff00";
+  ctx.font = "900 52px Menlo, monospace";
+  ctx.fillText(result.title, 34, 212);
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+  const fittedText = fitCanvasWrappedText(ctx, result.text, width - 68, 28, 20, 3);
+  ctx.font = `800 ${fittedText.size}px Menlo, monospace`;
+  fittedText.lines.slice(0, 3).forEach((line, index) => {
+    ctx.fillText(line, 34, 266 + index * (fittedText.size + 9));
+  });
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.44)";
+  ctx.font = "800 12px Menlo, monospace";
+  ctx.fillText("Spin before you overtrade.", 34, height - 30);
+  ctx.textAlign = "right";
+  ctx.fillText("perp-hub.com", width - 34, height - 30);
+  ctx.textAlign = "left";
+
+  return canvas;
+}
+
+async function saveWheelImage() {
+  if (!latestWheelResult) return;
+  const canvas = await drawWheelCard(latestWheelResult);
+  const link = document.createElement("a");
+  link.download = "perphub-wheel-card.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+async function copyWheelImage() {
+  if (!latestWheelResult) return;
+  const canvas = await drawWheelCard(latestWheelResult);
+  const blob = await canvasToBlob(canvas);
+
+  try {
+    if (!blob || !navigator.clipboard || !window.ClipboardItem) throw new Error("Clipboard image is unavailable");
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+    elements.wheelCopyButton.textContent = "Copied";
+  } catch {
+    const link = document.createElement("a");
+    link.download = "perphub-wheel-card.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    elements.wheelCopyButton.textContent = "Saved";
+  }
+
+  setTimeout(() => {
+    elements.wheelCopyButton.textContent = "Copy Image";
+  }, 1400);
 }
 
 function setControlMode(nextMode) {
@@ -716,6 +960,14 @@ elements.copyCardButton.addEventListener("click", copyShareImage);
 elements.shareXButton.addEventListener("click", shareOnX);
 elements.coffeeButton.addEventListener("click", openCoffeeModal);
 elements.coffeeCloseButton.addEventListener("click", closeCoffeeModal);
+elements.wheelSpinButton?.addEventListener("click", spinWheel);
+elements.wheelSaveButton?.addEventListener("click", saveWheelImage);
+elements.wheelCopyButton?.addEventListener("click", copyWheelImage);
+elements.wheelShareButton?.addEventListener("click", shareWheelResult);
+elements.wheelCardCloseButton?.addEventListener("click", closeWheelResultCard);
+elements.wheelResultCard?.addEventListener("click", (event) => {
+  if (event.target === elements.wheelResultCard) closeWheelResultCard();
+});
 elements.shareModal.addEventListener("click", (event) => {
   if (event.target === elements.shareModal) closeShareCard();
 });
@@ -727,6 +979,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeShareCard();
     closeCoffeeModal();
+    closeWheelResultCard();
   }
 });
 
@@ -752,13 +1005,17 @@ elements.homeActionButtons.forEach((button) => {
   button.addEventListener("click", () => setTab(button.dataset.homeTarget));
 });
 
+window.addEventListener("hashchange", () => {
+  setTab(tabFromHash() ?? "home", { updateHash: false });
+});
+
 elements.evmWalletLabel.textContent = DONATION_WALLETS.evm;
 elements.solanaWalletLabel.textContent = DONATION_WALLETS.solana;
 elements.walletCopyButtons.forEach((button) => {
   button.addEventListener("click", () => copyWallet(button.dataset.walletCopy, button));
 });
 
-setTab(getStoredTab());
+setTab(tabFromHash() ?? getStoredTab(), { updateHash: !tabFromHash() });
 setEstimateMode(activeEstimateMode);
 updatePnlState();
 syncAllRanges();

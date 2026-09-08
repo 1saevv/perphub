@@ -1191,6 +1191,438 @@ input[type="range"]::-webkit-slider-thumb {
   box-shadow: 0 0 24px rgba(204, 255, 0, 0.18);
 }
 
+.wheel-intro {
+  margin: 24px 0 8px;
+}
+
+.wheel-intro h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.15;
+}
+
+.wheel-intro p {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.wheel-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 18px;
+  align-items: center;
+}
+
+.wheel-stage {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 560px;
+  place-items: center;
+  padding: 18px 28px 28px;
+  background: transparent;
+}
+
+.wheel-stage::after {
+  position: absolute;
+  right: 17%;
+  bottom: 26px;
+  left: 17%;
+  z-index: 0;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.52), transparent 68%);
+  content: "";
+}
+
+.wheel-wrap {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(520px, 82vw);
+  place-items: center;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: 42px;
+  left: 50%;
+  z-index: 5;
+  width: 54px;
+  height: 62px;
+  border: 0;
+  border-radius: 0;
+  background:
+    radial-gradient(circle at 50% 14%, rgba(255, 255, 255, 0.46), transparent 18%),
+    linear-gradient(180deg, #fff1a8 0%, #ffc12c 54%, #f08a13 100%);
+  clip-path: polygon(50% 100%, 9% 0, 91% 0);
+  box-shadow:
+    0 8px 14px rgba(0, 0, 0, 0.26),
+    0 0 14px rgba(255, 194, 46, 0.14);
+  transform: translateX(-50%);
+}
+
+.wheel-pointer::before {
+  position: absolute;
+  inset: 7px 13px 22px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  content: "";
+}
+
+.wheel-pointer::after {
+  content: none;
+}
+
+.fortune-wheel {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  border-radius: 50%;
+  filter: drop-shadow(0 28px 46px rgba(0, 0, 0, 0.46));
+  transform-origin: 50% 50%;
+  will-change: transform;
+  transition: transform 5200ms cubic-bezier(0.07, 0.72, 0.06, 1);
+}
+
+.wheel-prize-board {
+  align-self: center;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(204, 255, 0, 0.035), transparent 74px),
+    linear-gradient(180deg, rgba(20, 21, 24, 0.94), rgba(8, 10, 11, 0.94));
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.wheel-prize-list {
+  display: grid;
+  gap: 6px;
+}
+
+.wheel-prize-list span {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(7, 9, 10, 0.54);
+  font-size: 0.66rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.wheel-prize-list b {
+  display: grid;
+  width: 28px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid rgba(204, 255, 0, 0.22);
+  border-radius: 7px;
+  color: var(--accent);
+  background: rgba(204, 255, 0, 0.08);
+  font-size: 0.68rem;
+}
+
+.wheel-outer {
+  fill: url("#wheelWood");
+  stroke: #09090b;
+  stroke-width: 3;
+}
+
+.wheel-inner-ring {
+  fill: none;
+  stroke: rgba(255, 216, 95, 0.76);
+  stroke-width: 6;
+}
+
+.wheel-slice {
+  stroke: rgba(87, 42, 10, 0.92);
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.slice-1,
+.slice-6 {
+  fill: #ccff00;
+}
+
+.slice-2,
+.slice-8 {
+  fill: #22c3ff;
+}
+
+.slice-3 {
+  fill: #8b4dff;
+}
+
+.slice-4,
+.slice-9 {
+  fill: #ff5f7c;
+}
+
+.slice-5 {
+  fill: #ffb020;
+}
+
+.slice-7 {
+  fill: #20d06b;
+}
+
+.slice-10 {
+  fill: #f4d5b1;
+}
+
+.wheel-lamps circle {
+  fill: url("#wheelLamp");
+  stroke: rgba(255, 122, 38, 0.72);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px rgba(255, 221, 98, 0.7));
+}
+
+.wheel-labels text {
+  fill: rgba(7, 9, 10, 0.88);
+  font-size: 20px;
+  font-weight: 900;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.24);
+  stroke-width: 3;
+}
+
+.wheel-center {
+  fill: url("#wheelCenter");
+  stroke: rgba(204, 255, 0, 0.42);
+  stroke-width: 2;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.38));
+}
+
+.wheel-spin-button {
+  position: absolute;
+  z-index: 6;
+  display: grid;
+  width: 88px;
+  height: 88px;
+  place-items: center;
+  border: 1px solid rgba(204, 255, 0, 0.56);
+  border-radius: 50%;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(204, 255, 0, 0.14), transparent 34%),
+    linear-gradient(180deg, #111822, #07090a);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -10px 14px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(204, 255, 0, 0.14),
+    0 10px 20px rgba(0, 0, 0, 0.3);
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.wheel-spin-button:hover {
+  color: #111113;
+  background: var(--accent);
+  box-shadow: 0 0 34px rgba(204, 255, 0, 0.28), 0 12px 24px rgba(0, 0, 0, 0.34);
+  transform: scale(1.03);
+}
+
+.wheel-spin-button:disabled {
+  cursor: wait;
+  opacity: 0.78;
+  transform: none;
+}
+
+.wheel-result-card {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 120;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  width: 100%;
+  padding: 24px;
+  background: rgba(7, 9, 10, 0.58);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: wheelOverlayIn 180ms ease-out;
+}
+
+.wheel-result-card::before {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(204, 255, 0, 0.08), transparent 42%);
+  content: "";
+}
+
+.wheel-result-card > span,
+.wheel-result-card > strong,
+.wheel-result-card > button,
+.wheel-card-preview,
+.wheel-card-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.wheel-result-card {
+  gap: 12px;
+}
+
+.wheel-result-card.hidden {
+  display: none;
+}
+
+.wheel-card-preview {
+  position: relative;
+  width: min(520px, 100%);
+  overflow: hidden;
+  border: 1px solid rgba(204, 255, 0, 0.16);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 86% 14%, rgba(204, 255, 0, 0.18), transparent 210px),
+    linear-gradient(135deg, #07090a 0%, #111113 58%, #101f08 100%);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  aspect-ratio: 728 / 420;
+}
+
+.wheel-card-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--muted);
+  background: rgba(7, 9, 10, 0.62);
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+
+.wheel-card-close:hover {
+  border-color: rgba(204, 255, 0, 0.28);
+  color: var(--text);
+  background: rgba(204, 255, 0, 0.08);
+}
+
+.wheel-card-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.4;
+  background-image:
+    linear-gradient(rgba(204, 255, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(204, 255, 0, 0.08) 1px, transparent 1px);
+  background-size: 10px 10px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 34%, #000 100%);
+}
+
+.wheel-card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  padding: clamp(18px, 4.5vw, 34px);
+}
+
+.wheel-card-content img {
+  width: 120px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.wheel-card-content span {
+  display: block;
+  margin-top: clamp(30px, 7vw, 62px);
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.wheel-card-content strong {
+  display: block;
+  max-width: 440px;
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: clamp(1.05rem, 3.5vw, 1.82rem);
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
+.wheel-card-content strong.long {
+  font-size: clamp(0.98rem, 3vw, 1.55rem);
+  line-height: 1.2;
+}
+
+.wheel-card-content em {
+  margin-top: auto;
+  color: rgba(255, 255, 255, 0.44);
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.wheel-card-actions {
+  display: grid;
+  width: min(520px, 100%);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.wheel-share-button {
+  min-height: 38px;
+  border: 1px solid rgba(204, 255, 0, 0.3);
+  border-radius: 8px;
+  padding: 0 14px;
+  color: var(--text);
+  background: rgba(204, 255, 0, 0.08);
+  font-weight: 900;
+  transition: background-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.wheel-share-button.primary {
+  color: #111113;
+  background: var(--accent);
+}
+
+.wheel-share-button:hover {
+  background: rgba(204, 255, 0, 0.14);
+  box-shadow: 0 0 24px rgba(204, 255, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.wheel-share-button.primary:hover {
+  background: #d6ff33;
+}
+
+@keyframes wheelOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 .vooi-example {
   display: grid;
   gap: 8px;
@@ -1470,7 +1902,7 @@ input[type="range"]::-webkit-slider-thumb {
 @media (max-width: 980px) {
   .app-shell {
     width: calc(100vw - 24px);
-    padding-bottom: 92px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
   }
 
   body::after {
@@ -1479,9 +1911,11 @@ input[type="range"]::-webkit-slider-thumb {
     bottom: 0;
     left: 0;
     z-index: 79;
-    height: calc(74px + env(safe-area-inset-bottom));
+    height: calc(76px + env(safe-area-inset-bottom));
     background: #111113;
     content: "";
+    pointer-events: none;
+    transform: translate3d(0, 0, 0);
   }
 
   .hero-row,
@@ -1489,7 +1923,8 @@ input[type="range"]::-webkit-slider-thumb {
   .scenario-grid,
   .input-grid,
   .results-grid,
-  .vooi-layout {
+  .vooi-layout,
+  .wheel-layout {
     grid-template-columns: 1fr;
   }
 
@@ -1551,13 +1986,14 @@ input[type="range"]::-webkit-slider-thumb {
     display: flex;
     position: fixed;
     right: 0;
-    bottom: -1px;
+    bottom: 0;
     left: 0;
     z-index: 80;
+    align-items: center;
     justify-content: center;
     gap: 6px;
-    min-height: calc(58px + env(safe-area-inset-bottom));
-    padding: 8px 10px calc(9px + env(safe-area-inset-bottom));
+    height: calc(76px + env(safe-area-inset-bottom));
+    padding: 10px 10px calc(12px + env(safe-area-inset-bottom));
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-right: 0;
     border-bottom: 0;
@@ -1566,6 +2002,10 @@ input[type="range"]::-webkit-slider-thumb {
     background: #111113;
     box-shadow: 0 18px 48px rgba(0, 0, 0, 0.46);
     backdrop-filter: blur(16px);
+    backface-visibility: hidden;
+    contain: layout paint;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
   }
 
   .vooi-video-mobile-link {
@@ -1581,6 +2021,11 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 8px;
     padding: 0 8px;
     font-size: 0.74rem;
+  }
+
+  .mobile-tabs .tab-button {
+    min-height: 52px;
+    align-self: stretch;
   }
 
   .tab-icon {
@@ -1605,8 +2050,15 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 @media (max-width: 620px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
   .app-shell {
     width: calc(100vw - 20px);
+    max-width: 100%;
   }
 
   .brand-logo {
@@ -1697,8 +2149,52 @@ input[type="range"]::-webkit-slider-thumb {
   .results-panel,
   .scenario-grid > .panel,
   .chart-panel,
-  .vooi-panel {
+  .vooi-panel,
+  .wheel-stage,
+  .wheel-result-card {
     padding: 18px;
+  }
+
+  .wheel-stage,
+  .wheel-result-card {
+    min-height: auto;
+  }
+
+  .wheel-stage {
+    overflow: hidden;
+    padding: 26px 0 24px;
+  }
+
+  .wheel-prize-board {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .wheel-prize-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wheel-wrap {
+    width: min(420px, calc(100vw - 54px));
+  }
+
+  .fortune-wheel {
+    width: 100%;
+  }
+
+  .wheel-pointer {
+    top: 34px;
+    width: 44px;
+    height: 52px;
+  }
+
+  .wheel-spin-button {
+    width: 88px;
+    height: 88px;
+  }
+
+  .wheel-card-actions {
+    grid-template-columns: 1fr;
   }
 
   .inputs-panel {
@@ -1743,6 +2239,10 @@ input[type="range"]::-webkit-slider-thumb {
 
   .share-card-content {
     padding: 14px;
+  }
+
+  .wheel-prize-list {
+    grid-template-columns: 1fr;
   }
 
   .share-primary {
