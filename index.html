@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" href="faviconperphub-large.png?v=3" />
     <link rel="stylesheet" href="styles.css?v=118" />
   </head>
-  <body>
+  <body class="app-loading">
     <main class="app-shell">
       <header class="topbar">
         <button class="brand" type="button" id="homeLogoButton" aria-label="Open home">
@@ -28,15 +28,45 @@
             <img class="tab-icon boost-tab-icon" src="boostshedder.png" alt="" />
             <span>Boost</span>
           </button>
-          <button class="tab-button" type="button" data-tab="wheel">
-            <img class="tab-icon" src="wheellogo.png" alt="" />
-            <span>Wheel</span>
-          </button>
+          <div class="more-menu">
+            <button class="tab-button more-button" type="button" id="moreButton" aria-expanded="false" aria-controls="moreMenu">
+              <span>More</span>
+              <span class="more-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="more-dropdown" id="moreMenu">
+              <button class="tab-button more-item" type="button" data-tab="stack">
+                <span>Points Stack</span>
+              </button>
+              <button class="tab-button more-item" type="button" data-tab="wheel">
+                <img class="tab-icon" src="wheellogo.png" alt="" />
+                <span>Wheel</span>
+              </button>
+            </div>
+          </div>
         </nav>
 
         <div class="topbar-actions">
           <button class="coffee-link" id="coffeeButton" type="button">Buy me a coffee</button>
           <a class="contact-link" href="https://x.com/1saevv" target="_blank" rel="noreferrer">Contact</a>
+        </div>
+
+        <div class="burger-menu">
+          <button class="burger-button" type="button" id="burgerButton" aria-label="Open menu" aria-expanded="false" aria-controls="burgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div class="burger-dropdown" id="burgerMenu">
+            <button class="burger-item" type="button" data-tab="stack">
+              <span>Points Stack</span>
+            </button>
+            <button class="burger-item" type="button" data-tab="wheel">
+              <img class="tab-icon" src="wheellogo.png" alt="" />
+              <span>Wheel</span>
+            </button>
+            <button class="burger-item burger-coffee-item" id="mobileCoffeeButton" type="button">Buy me a coffee</button>
+            <a class="burger-item" href="https://x.com/1saevv" target="_blank" rel="noreferrer">Contact</a>
+          </div>
         </div>
       </header>
 
@@ -52,10 +82,6 @@
         <button class="tab-button wide-label" type="button" data-tab="boost">
           <img class="tab-icon boost-tab-icon" src="boostshedder.png" alt="" />
           <span>Boost</span>
-        </button>
-        <button class="tab-button" type="button" data-tab="wheel">
-          <img class="tab-icon" src="wheellogo.png" alt="" />
-          <span>Wheel</span>
         </button>
       </nav>
 
@@ -77,12 +103,14 @@
           <h1>Made for fun. Maybe someone finds it useful.</h1>
           <div class="home-signal-row" aria-label="PerpHub sections">
             <span>Points calculator</span>
+            <span>Points stack</span>
             <span>Trading strategies</span>
             <span>Referral boosts</span>
             <span>Perp wheel</span>
           </div>
           <div class="home-actions">
             <button class="home-action primary" type="button" data-home-target="calculator">Lighter calculator</button>
+            <button class="home-action" type="button" data-home-target="stack">Points Stack</button>
             <button class="home-action" type="button" data-home-target="vooi">Strategies</button>
             <button class="home-action" type="button" data-home-target="boost">Boosts</button>
             <button class="home-action" type="button" data-home-target="wheel">Wheel</button>
@@ -183,7 +211,14 @@
             <div class="panel-head">
               <h2>Results</h2>
               <div class="result-actions">
-                <button class="share-button" id="copyButton" type="button">Share</button>
+                <button class="share-button icon-share-button" id="copyButton" type="button">
+                  <svg class="share-button-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 15V4" />
+                    <path d="M7 9l5-5 5 5" />
+                    <path d="M5 13v6h14v-6" />
+                  </svg>
+                  <span>Share</span>
+                </button>
                 <a class="trade-button" href="https://robinhoodchain.lighter.xyz/?referral=PERP&source=none" target="_blank" rel="noreferrer">Open Lighter x Robinhood</a>
               </div>
             </div>
@@ -232,6 +267,142 @@
           </section>
         </section>
 
+      </section>
+
+      <section class="tab-panel" id="stackTab">
+        <section class="hero-row stack-hero">
+          <div>
+            <h1>Points Stack</h1>
+            <p class="hero-subtitle">Combine reward-pool estimates and OTC point prices into one perp farming stack.</p>
+          </div>
+
+          <article class="pool-card stack-total-card">
+            <span>Stack net value</span>
+            <strong id="stackHeroNet">$0.00</strong>
+          </article>
+        </section>
+
+        <section class="stack-layout">
+          <section class="stack-dex-grid">
+            <article class="panel stack-dex-card" data-stack-dex="0">
+              <div class="panel-head">
+                <h2>DEX 1</h2>
+                <select class="stack-mode" aria-label="DEX 1 valuation mode">
+                  <option value="token">Reward Pool</option>
+                  <option value="otc">OTC Price</option>
+                </select>
+              </div>
+
+              <div class="stack-fields">
+                <label class="field">
+                  <span>Perp DEX</span>
+                  <input class="stack-name" type="text" placeholder="Enter perp DEX name" />
+                </label>
+                <label class="field">
+                  <span>Your Points</span>
+                  <input class="stack-points" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter your points amount" />
+                </label>
+                <label class="field token-field">
+                  <span>Total Points</span>
+                  <input class="stack-total-points" type="number" min="0" step="1" inputmode="decimal" placeholder="Enter total points amount" />
+                </label>
+                <label class="field token-field">
+                  <span>Reward Pool</span>
+                  <input class="stack-reward-pool" type="number" min="0" step="1" inputmode="decimal" placeholder="Enter reward pool token amount" />
+                </label>
+                <label class="field money-field token-field">
+                  <span>Token Price</span>
+                  <b>$</b>
+                  <input class="stack-token-price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter token price" />
+                </label>
+                <label class="field money-field otc-field">
+                  <span>OTC Price / Point</span>
+                  <b>$</b>
+                  <input class="stack-otc-price" type="number" min="0" step="0.000001" inputmode="decimal" placeholder="Enter OTC price per point" />
+                </label>
+                <label class="field money-field">
+                  <span>Trading PnL</span>
+                  <b>$</b>
+                  <input class="stack-pnl" type="number" step="0.01" inputmode="decimal" placeholder="Enter your trading PnL" />
+                </label>
+              </div>
+            </article>
+
+            <article class="panel stack-dex-card" data-stack-dex="1">
+              <div class="panel-head">
+                <h2>DEX 2</h2>
+                <select class="stack-mode" aria-label="DEX 2 valuation mode">
+                  <option value="otc">OTC Price</option>
+                  <option value="token">Reward Pool</option>
+                </select>
+              </div>
+
+              <div class="stack-fields">
+                <label class="field">
+                  <span>Perp DEX</span>
+                  <input class="stack-name" type="text" placeholder="Enter perp DEX name" />
+                </label>
+                <label class="field">
+                  <span>Your Points</span>
+                  <input class="stack-points" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter your points amount" />
+                </label>
+                <label class="field token-field">
+                  <span>Total Points</span>
+                  <input class="stack-total-points" type="number" min="0" step="1" inputmode="decimal" placeholder="Enter total points amount" />
+                </label>
+                <label class="field token-field">
+                  <span>Reward Pool</span>
+                  <input class="stack-reward-pool" type="number" min="0" step="1" inputmode="decimal" placeholder="Enter reward pool token amount" />
+                </label>
+                <label class="field money-field token-field">
+                  <span>Token Price</span>
+                  <b>$</b>
+                  <input class="stack-token-price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter token price" />
+                </label>
+                <label class="field money-field otc-field">
+                  <span>OTC Price / Point</span>
+                  <b>$</b>
+                  <input class="stack-otc-price" type="number" min="0" step="0.000001" inputmode="decimal" placeholder="Enter OTC price per point" />
+                </label>
+                <label class="field money-field">
+                  <span>Trading PnL</span>
+                  <b>$</b>
+                  <input class="stack-pnl" type="number" step="0.01" inputmode="decimal" placeholder="Enter your trading PnL" />
+                </label>
+              </div>
+            </article>
+          </section>
+
+          <aside class="panel stack-summary">
+            <div class="panel-head">
+              <h2>Stack Results</h2>
+              <button class="share-button icon-share-button" id="stackShareButton" type="button">
+                <svg class="share-button-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 15V4" />
+                  <path d="M7 9l5-5 5 5" />
+                  <path d="M5 13v6h14v-6" />
+                </svg>
+                <span>Share</span>
+              </button>
+            </div>
+            <div class="results-grid stack-results-grid">
+              <article class="result-card">
+                <span>Gross Points Value</span>
+                <strong id="stackGrossValue">$0.00</strong>
+              </article>
+              <article class="result-card">
+                <span>Total PnL</span>
+                <strong id="stackPnlValue">$0.00</strong>
+              </article>
+              <article class="result-card net-profit-card">
+                <span>Total Net Value</span>
+                <strong id="stackNetValue">$0.00</strong>
+                <em id="stackVerdict">Add points to build your stack.</em>
+              </article>
+            </div>
+            <div class="table-like stack-breakdown" id="stackBreakdown"></div>
+          </aside>
+        </section>
       </section>
 
       <section class="tab-panel" id="vooiTab">
@@ -628,10 +799,60 @@
           </div>
         </div>
 
+        <div class="stack-bg-picker" id="shareBgPicker" aria-label="Card backgrounds"></div>
+
         <div class="share-actions">
           <button class="share-action-button" id="saveCardButton" type="button">Save Card</button>
           <button class="share-action-button" id="copyCardButton" type="button">Copy Image</button>
           <button class="share-action-button primary" id="shareXButton" type="button">Share on X</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="share-modal hidden" id="stackShareModal" aria-hidden="true">
+      <div class="share-dialog" role="dialog" aria-modal="true" aria-labelledby="stackShareTitle">
+        <div class="share-dialog-head">
+          <h2 id="stackShareTitle">Points Stack card</h2>
+          <button class="icon-button" id="stackShareCloseButton" type="button" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="share-card stack-share-card" id="stackShareCard">
+          <div class="share-card-grid"></div>
+          <div class="share-card-content">
+            <div class="share-brand">
+              <img src="perphubbbbb.png" alt="PerpHub" loading="lazy" />
+              <span class="stack-card-label">POINTS STACK</span>
+            </div>
+
+            <div class="share-primary">
+              <span>Total Net Value</span>
+              <strong id="stackShareNet">$0.00</strong>
+            </div>
+
+            <div class="stack-card-rows">
+              <div>
+                <span id="stackShareDexOne">DEX 1</span>
+                <strong id="stackShareDexOneValue">$0.00</strong>
+              </div>
+              <div>
+                <span id="stackShareDexTwo">DEX 2</span>
+                <strong id="stackShareDexTwoValue">$0.00</strong>
+              </div>
+            </div>
+
+            <div class="share-footer">
+              <span id="stackShareMeta">Gross $0.00 · PnL $0.00</span>
+              <span>perp-hub.com</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack-bg-picker" id="stackBgPicker" aria-label="Card backgrounds"></div>
+
+        <div class="share-actions">
+          <button class="share-action-button" id="stackSaveCardButton" type="button">Save Card</button>
+          <button class="share-action-button" id="stackCopyCardButton" type="button">Copy Image</button>
+          <button class="share-action-button primary" id="stackShareXButton" type="button">Share on X</button>
         </div>
       </div>
     </div>

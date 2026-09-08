@@ -3,6 +3,7 @@ const ACTIVE_TAB_STORAGE_KEY = "perphub.activeTab";
 const tabHashByName = {
   home: "",
   calculator: "lighter",
+  stack: "points-stack",
   vooi: "strategies",
   boost: "boost",
   wheel: "wheel",
@@ -10,6 +11,9 @@ const tabHashByName = {
 const tabNameByHash = {
   lighter: "calculator",
   calculator: "calculator",
+  stack: "stack",
+  "points-stack": "stack",
+  pointsstack: "stack",
   strategies: "vooi",
   strategy: "vooi",
   vooi: "vooi",
@@ -21,6 +25,30 @@ const DONATION_WALLETS = {
   evm: "0xde2a8b100ffB2f957d008DC28661A9E20A7AF7f4",
   solana: "GZVssHZt4YCnicAMT5HGB5btZBZt6dLghdGn8rADDGzX",
 };
+const STACK_DEX_ASSETS = [
+  { keys: ["lighter", "lighter robinhood", "lighter x robinhood"], logo: "lighterlogo.jpg" },
+  { keys: ["extended", "extended exchange"], logo: "Extendedlogo.jpg" },
+  { keys: ["hyperliquid", "hyper"], logo: "hyperlogo.jpg" },
+  { keys: ["vooi"], logo: "vooilogoforPerpHub.jpg" },
+  { keys: ["ostium"], logo: "ostiumlogo.jpg" },
+  { keys: ["sai"], logo: "sailogo.jpg" },
+  { keys: ["entropy"], logo: "entropylogo.jpg" },
+];
+const STACK_CARD_BACKGROUNDS = [
+  { name: "Default", src: "" },
+  { name: "1", src: "1stPnlCard.jpg" },
+  { name: "2", src: "2ndPnLcard.jpg" },
+  { name: "3", src: "3rdPnLcard.jpg" },
+  { name: "4", src: "4thPnLcard.jpg" },
+  { name: "5", src: "5thPnLcard.jpg" },
+  { name: "6", src: "6thPnLcard.jpg" },
+  { name: "7", src: "7thPnLcard.jpg" },
+  { name: "8", src: "8thPnLcard.jpg" },
+  { name: "9", src: "9thPnLcard.jpg" },
+  { name: "10", src: "10thPnLcard.jpg" },
+];
+let activeShareCardBackground = 0;
+let activeStackCardBackground = 0;
 
 const defaults = {
   userPoints: 16.8,
@@ -96,11 +124,39 @@ const elements = {
   controlModeButtons: document.querySelectorAll("[data-control-mode]"),
   estimateModeButtons: document.querySelectorAll("[data-estimate-mode]"),
   tabButtons: document.querySelectorAll("[data-tab]"),
+  moreMenus: document.querySelectorAll(".more-menu"),
+  moreButtons: document.querySelectorAll(".more-button"),
+  burgerMenu: document.querySelector(".burger-menu"),
+  burgerButton: document.querySelector("#burgerButton"),
+  mobileCoffeeButton: document.querySelector("#mobileCoffeeButton"),
   homeLogoButton: document.querySelector("#homeLogoButton"),
   homeActionButtons: document.querySelectorAll("[data-home-target]"),
   vooiVideo: document.querySelector("#vooiVideo"),
   homeTab: document.querySelector("#homeTab"),
   calculatorTab: document.querySelector("#calculatorTab"),
+  stackTab: document.querySelector("#stackTab"),
+  stackDexCards: document.querySelectorAll(".stack-dex-card"),
+  stackInputs: document.querySelectorAll(".stack-dex-card input, .stack-dex-card select"),
+  stackHeroNet: document.querySelector("#stackHeroNet"),
+  stackGrossValue: document.querySelector("#stackGrossValue"),
+  stackPnlValue: document.querySelector("#stackPnlValue"),
+  stackNetValue: document.querySelector("#stackNetValue"),
+  stackVerdict: document.querySelector("#stackVerdict"),
+  stackBreakdown: document.querySelector("#stackBreakdown"),
+  stackShareButton: document.querySelector("#stackShareButton"),
+  stackShareModal: document.querySelector("#stackShareModal"),
+  stackShareCloseButton: document.querySelector("#stackShareCloseButton"),
+  stackShareNet: document.querySelector("#stackShareNet"),
+  stackShareDexOne: document.querySelector("#stackShareDexOne"),
+  stackShareDexOneValue: document.querySelector("#stackShareDexOneValue"),
+  stackShareDexTwo: document.querySelector("#stackShareDexTwo"),
+  stackShareDexTwoValue: document.querySelector("#stackShareDexTwoValue"),
+  stackShareMeta: document.querySelector("#stackShareMeta"),
+  stackShareCard: document.querySelector("#stackShareCard"),
+  stackBgPicker: document.querySelector("#stackBgPicker"),
+  stackSaveCardButton: document.querySelector("#stackSaveCardButton"),
+  stackCopyCardButton: document.querySelector("#stackCopyCardButton"),
+  stackShareXButton: document.querySelector("#stackShareXButton"),
   vooiTab: document.querySelector("#vooiTab"),
   boostTab: document.querySelector("#boostTab"),
   wheelTab: document.querySelector("#wheelTab"),
@@ -116,6 +172,8 @@ const elements = {
   wheelShareButton: document.querySelector("#wheelShareButton"),
   chartGrid: document.querySelector("#chartGrid"),
   shareModal: document.querySelector("#shareModal"),
+  shareCard: document.querySelector("#shareCard"),
+  shareBgPicker: document.querySelector("#shareBgPicker"),
   shareCloseButton: document.querySelector("#shareCloseButton"),
   shareLit: document.querySelector("#shareLit"),
   shareUsd: document.querySelector("#shareUsd"),
@@ -253,6 +311,105 @@ function formatCompact(value) {
   return compactFormatter.format(value);
 }
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[char]);
+}
+
+function normalizeDexName(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function getStackDexAsset(name) {
+  const normalizedName = normalizeDexName(name);
+  if (!normalizedName) return null;
+  return STACK_DEX_ASSETS.find((asset) => asset.keys.some((key) => normalizedName.includes(key))) ?? null;
+}
+
+function renderStackDexLabel(result) {
+  return `
+    <span class="stack-dex-label">
+      ${result.logo ? `<img class="stack-dex-logo" src="${result.logo}" alt="" loading="lazy" />` : ""}
+      <span>${escapeHtml(result.name)}</span>
+    </span>
+  `;
+}
+
+function selectedStackCardBackground() {
+  return STACK_CARD_BACKGROUNDS[activeStackCardBackground] ?? STACK_CARD_BACKGROUNDS[0];
+}
+
+function selectedShareCardBackground() {
+  return STACK_CARD_BACKGROUNDS[activeShareCardBackground] ?? STACK_CARD_BACKGROUNDS[0];
+}
+
+function applyCardBackground(card, picker, background, activeIndex) {
+  if (!card) return;
+
+  card.classList.toggle("has-image-bg", Boolean(background.src));
+  if (background.src) {
+    card.style.setProperty("--stack-card-bg", `url("${background.src}")`);
+  } else {
+    card.style.removeProperty("--stack-card-bg");
+  }
+
+  picker?.querySelectorAll(".stack-bg-choice").forEach((button, index) => {
+    button.classList.toggle("active", index === activeIndex);
+  });
+}
+
+function applyStackCardBackground() {
+  const background = selectedStackCardBackground();
+  applyCardBackground(elements.stackShareCard, elements.stackBgPicker, background, activeStackCardBackground);
+}
+
+function applyShareCardBackground() {
+  const background = selectedShareCardBackground();
+  applyCardBackground(elements.shareCard, elements.shareBgPicker, background, activeShareCardBackground);
+}
+
+function renderCardBgPicker(picker, onSelect, activeIndex) {
+  if (!picker) return;
+  picker.innerHTML = STACK_CARD_BACKGROUNDS.map((background, index) => {
+    const style = background.src ? ` style="background-image: url('${background.src}')"` : "";
+    return `<button class="stack-bg-choice${index === activeIndex ? " active" : ""}" type="button" data-card-bg="${index}" aria-label="Use ${background.name} background"${style}></button>`;
+  }).join("");
+
+  picker.querySelectorAll("[data-card-bg]").forEach((button) => {
+    button.addEventListener("click", () => {
+      onSelect(Number(button.dataset.cardBg) || 0);
+    });
+  });
+}
+
+function renderStackBgPicker() {
+  renderCardBgPicker(elements.stackBgPicker, (index) => {
+    activeStackCardBackground = index;
+    applyStackCardBackground();
+  }, activeStackCardBackground);
+}
+
+function renderShareBgPicker() {
+  renderCardBgPicker(elements.shareBgPicker, (index) => {
+    activeShareCardBackground = index;
+    applyShareCardBackground();
+  }, activeShareCardBackground);
+}
+
+function drawCoverImage(ctx, image, x, y, width, height) {
+  const scale = Math.max(width / image.width, height / image.height);
+  const drawWidth = image.width * scale;
+  const drawHeight = image.height * scale;
+  const drawX = x + (width - drawWidth) / 2;
+  const drawY = y + (height - drawHeight) / 2;
+  ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+}
+
 function clampToRange(input, value) {
   const min = Number(input.min);
   const max = Number(input.max);
@@ -335,6 +492,151 @@ function calculate() {
     estimatedValuePerPointLit,
     estimatedValuePerPointUsd,
   };
+}
+
+function readStackNumber(card, selector, allowSigned = false) {
+  const input = card.querySelector(selector);
+  if (!input) return 0;
+  const rawValue = input.value.trim();
+  const value = Number(rawValue);
+  if (rawValue === "" || !Number.isFinite(value)) return 0;
+  return allowSigned ? value : Math.max(0, value);
+}
+
+function getStackCardResult(card) {
+  const mode = card.querySelector(".stack-mode")?.value ?? "token";
+  const name = card.querySelector(".stack-name")?.value.trim() || `DEX ${Number(card.dataset.stackDex || 0) + 1}`;
+  const points = readStackNumber(card, ".stack-points");
+  const pnl = readStackNumber(card, ".stack-pnl", true);
+  let gross = 0;
+
+  card.dataset.mode = mode;
+
+  if (mode === "otc") {
+    gross = points * readStackNumber(card, ".stack-otc-price");
+  } else {
+    const totalPoints = readStackNumber(card, ".stack-total-points");
+    const rewardPool = readStackNumber(card, ".stack-reward-pool");
+    const tokenPrice = readStackNumber(card, ".stack-token-price");
+    gross = totalPoints > 0 ? (points / totalPoints) * rewardPool * tokenPrice : 0;
+  }
+
+  return {
+    mode,
+    name,
+    logo: getStackDexAsset(name)?.logo ?? "",
+    gross,
+    pnl,
+    net: gross + pnl,
+  };
+}
+
+function setupStackNumberHints() {
+  elements.stackDexCards.forEach((card) => {
+    card.querySelectorAll("input[type='number']").forEach((input) => {
+      if (input.nextElementSibling?.classList.contains("stack-number-hint")) return;
+      const hint = document.createElement("small");
+      hint.className = "stack-number-hint";
+      input.insertAdjacentElement("afterend", hint);
+    });
+  });
+}
+
+function updateStackNumberHints() {
+  elements.stackDexCards.forEach((card) => {
+    card.querySelectorAll("input[type='number']").forEach((input) => {
+      const hint = input.nextElementSibling;
+      if (!hint?.classList.contains("stack-number-hint")) return;
+
+      const value = Number(input.value);
+      hint.textContent = input.value.trim() && Number.isFinite(value) ? `≈ ${formatCompact(value)}` : "";
+    });
+  });
+}
+
+function getStackVerdict(results, netValue) {
+  const activeResults = results.filter((result) => result.gross > 0 || result.pnl !== 0);
+  if (!activeResults.length) return "Add points to build your stack.";
+  if (netValue < 0) return "PnL is eating the stack.";
+
+  const winner = activeResults.reduce((best, result) => (result.net > best.net ? result : best), activeResults[0]);
+  return `${winner.name} is carrying the stack.`;
+}
+
+function calculateStack() {
+  if (!elements.stackDexCards.length) return null;
+
+  updateStackNumberHints();
+  const results = [...elements.stackDexCards].map(getStackCardResult);
+  const gross = results.reduce((sum, result) => sum + result.gross, 0);
+  const pnl = results.reduce((sum, result) => sum + result.pnl, 0);
+  const net = gross + pnl;
+
+  elements.stackHeroNet.textContent = currencyFormatter.format(net);
+  elements.stackGrossValue.textContent = currencyFormatter.format(gross);
+  elements.stackPnlValue.textContent = formatSignedCurrency(pnl);
+  elements.stackPnlValue.closest(".result-card").classList.toggle("is-negative", pnl < 0);
+  elements.stackNetValue.textContent = currencyFormatter.format(net);
+  elements.stackNetValue.closest(".result-card").classList.toggle("is-negative", net < 0);
+  elements.stackVerdict.textContent = getStackVerdict(results, net);
+  elements.stackBreakdown.innerHTML = results
+    .map(
+      (result) => `
+        <div class="table-row stack-breakdown-row">
+          <span class="stack-breakdown-left">
+            ${renderStackDexLabel(result)}
+            <em>${result.mode === "otc" ? "OTC Price" : "Reward Pool"}</em>
+          </span>
+          <strong class="${result.net < 0 ? "is-negative" : "is-positive"}">${currencyFormatter.format(result.net)}</strong>
+        </div>
+      `,
+    )
+    .join("");
+
+  return { results, gross, pnl, net };
+}
+
+function getStackShareText() {
+  const stack = calculateStack();
+  if (!stack) return "";
+
+  return [
+    `My Points Stack: ${currencyFormatter.format(stack.net)}`,
+    "",
+    ...stack.results.map((result) => `${result.name}: ${currencyFormatter.format(result.net)} (${result.mode === "otc" ? "OTC Price" : "Reward Pool"})`),
+    `PnL: ${formatSignedCurrency(stack.pnl)}`,
+    "",
+    "Calculated on PerpHub.",
+  ].join("\n");
+}
+
+function updateStackShareCard(stack) {
+  const [first, second] = stack.results;
+
+  elements.stackShareNet.textContent = currencyFormatter.format(stack.net);
+  elements.stackShareNet.classList.toggle("is-negative", stack.net < 0);
+  elements.stackShareDexOne.innerHTML = first ? renderStackDexLabel(first) : "DEX 1";
+  elements.stackShareDexOneValue.textContent = currencyFormatter.format(first?.net ?? 0);
+  elements.stackShareDexOneValue.classList.toggle("is-negative", (first?.net ?? 0) < 0);
+  elements.stackShareDexTwo.innerHTML = second ? renderStackDexLabel(second) : "DEX 2";
+  elements.stackShareDexTwoValue.textContent = currencyFormatter.format(second?.net ?? 0);
+  elements.stackShareDexTwoValue.classList.toggle("is-negative", (second?.net ?? 0) < 0);
+  elements.stackShareMeta.textContent = `Gross ${currencyFormatter.format(stack.gross)} · PnL ${formatSignedCurrency(stack.pnl)}`;
+}
+
+function openStackShareCard() {
+  const stack = calculateStack();
+  if (!stack) return;
+
+  updateStackShareCard(stack);
+  applyStackCardBackground();
+  elements.stackShareModal.classList.remove("hidden");
+  elements.stackShareModal.setAttribute("aria-hidden", "false");
+}
+
+function closeStackShareCard() {
+  elements.stackShareModal.classList.add("hidden");
+  elements.stackShareModal.setAttribute("aria-hidden", "true");
 }
 
 function chartValueForTotalPoints(totalPoints, litPrice, rewardPoolLit) {
@@ -450,6 +752,7 @@ function updateShareCard(result) {
 function openShareCard() {
   const result = calculate();
   updateShareCard(result);
+  applyShareCardBackground();
   elements.shareModal.classList.remove("hidden");
   elements.shareModal.setAttribute("aria-hidden", "false");
 }
@@ -495,16 +798,29 @@ async function drawShareCard(result) {
   canvas.width = width * scale;
   canvas.height = height * scale;
   ctx.scale(scale, scale);
+  const background = selectedShareCardBackground();
+  const backgroundImage = background.src ? await loadImage(background.src) : null;
 
-  const gradient = ctx.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(0, "#07090a");
-  gradient.addColorStop(0.54, "#111113");
-  gradient.addColorStop(1, "#12230c");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
+  if (backgroundImage) {
+    drawCoverImage(ctx, backgroundImage, 0, 0, width, height);
+    ctx.fillStyle = "rgba(7, 9, 10, 0.56)";
+    ctx.fillRect(0, 0, width, height);
+    const shade = ctx.createLinearGradient(0, 0, width, 0);
+    shade.addColorStop(0, "rgba(7, 9, 10, 0.34)");
+    shade.addColorStop(1, "rgba(7, 9, 10, 0)");
+    ctx.fillStyle = shade;
+    ctx.fillRect(0, 0, width, height);
+  } else {
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, "#07090a");
+    gradient.addColorStop(0.54, "#111113");
+    gradient.addColorStop(1, "#12230c");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+  }
 
   const glow = ctx.createRadialGradient(width * 0.86, height * 0.12, 0, width * 0.86, height * 0.12, 260);
-  glow.addColorStop(0, "rgba(204, 255, 0, 0.2)");
+  glow.addColorStop(0, backgroundImage ? "rgba(204, 255, 0, 0.12)" : "rgba(204, 255, 0, 0.2)");
   glow.addColorStop(1, "rgba(204, 255, 0, 0)");
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, width, height);
@@ -518,16 +834,16 @@ async function drawShareCard(result) {
 
   const logo = await loadImage("perphubbbbb.png");
   if (logo) {
-    ctx.drawImage(logo, 34, 22, 120, 48);
+    ctx.drawImage(logo, 34, 2, 120, 48);
   } else {
     ctx.fillStyle = "#ffffff";
     ctx.font = "700 24px Menlo, monospace";
-    ctx.fillText("PerpHub", 34, 52);
+    ctx.fillText("PerpHub", 34, 32);
   }
 
   const programLogo = await loadImage("logoRL.png");
   if (programLogo) {
-    ctx.drawImage(programLogo, width - 254, 16, 220, 74);
+    ctx.drawImage(programLogo, width - 254, -2, 220, 74);
   }
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
@@ -571,6 +887,13 @@ function downloadCanvas(canvas) {
   link.click();
 }
 
+function downloadCanvasAs(canvas, filename) {
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
 function canvasToBlob(canvas) {
   return new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
 }
@@ -601,6 +924,134 @@ async function saveShareImage() {
 function shareOnX() {
   const result = calculate();
   const text = encodeURIComponent(getXShareText(result));
+  window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank", "noopener,noreferrer");
+}
+
+async function drawStackShareCard(stack) {
+  const canvas = document.createElement("canvas");
+  const scale = 2;
+  const width = 728;
+  const height = 420;
+  const ctx = canvas.getContext("2d");
+  canvas.width = width * scale;
+  canvas.height = height * scale;
+  ctx.scale(scale, scale);
+  const background = selectedStackCardBackground();
+  const backgroundImage = background.src ? await loadImage(background.src) : null;
+
+  if (backgroundImage) {
+    drawCoverImage(ctx, backgroundImage, 0, 0, width, height);
+    ctx.fillStyle = "rgba(7, 9, 10, 0.56)";
+    ctx.fillRect(0, 0, width, height);
+    const shade = ctx.createLinearGradient(0, 0, width, 0);
+    shade.addColorStop(0, "rgba(7, 9, 10, 0.34)");
+    shade.addColorStop(1, "rgba(7, 9, 10, 0)");
+    ctx.fillStyle = shade;
+    ctx.fillRect(0, 0, width, height);
+  } else {
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, "#07090a");
+    gradient.addColorStop(0.56, "#111113");
+    gradient.addColorStop(1, "#12230c");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  const glow = ctx.createRadialGradient(width * 0.84, height * 0.12, 0, width * 0.84, height * 0.12, 260);
+  glow.addColorStop(0, backgroundImage ? "rgba(204, 255, 0, 0.12)" : "rgba(204, 255, 0, 0.2)");
+  glow.addColorStop(1, "rgba(204, 255, 0, 0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = "rgba(204, 255, 0, 0.034)";
+  for (let x = Math.floor(width * 0.34); x < width; x += 10) {
+    for (let y = 0; y < height; y += 10) {
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
+
+  const logo = await loadImage("perphubbbbb.png");
+  if (logo) {
+    ctx.drawImage(logo, 34, 8, 120, 48);
+  } else {
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 24px Menlo, monospace";
+    ctx.fillText("PerpHub", 34, 38);
+  }
+
+  ctx.fillStyle = "#ccff00";
+  ctx.font = "900 14px Menlo, monospace";
+  ctx.textAlign = "right";
+  ctx.fillText("POINTS STACK", width - 34, 38);
+  ctx.textAlign = "left";
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
+  ctx.font = "800 13px Menlo, monospace";
+  ctx.fillText("Total Net Value", 34, 148);
+  ctx.fillStyle = stack.net < 0 ? "#ff7b7b" : "#ccff00";
+  fitText(ctx, currencyFormatter.format(stack.net), width - 68, 74, 900);
+  ctx.fillText(currencyFormatter.format(stack.net), 34, 236);
+
+  for (const [index, result] of stack.results.slice(0, 2).entries()) {
+    const x = 34 + index * 345;
+    const y = 304;
+    ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+    ctx.fillRect(x, y, 316, 58);
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.075)";
+    ctx.strokeRect(x, y, 316, 58);
+    const dexLogo = result.logo ? await loadImage(result.logo) : null;
+    if (dexLogo) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(x + 14, y + 12, 22, 22, 6);
+      ctx.clip();
+      ctx.drawImage(dexLogo, x + 14, y + 12, 22, 22);
+      ctx.restore();
+    }
+    ctx.fillStyle = "rgba(255, 255, 255, 0.46)";
+    ctx.font = "800 12px Menlo, monospace";
+    ctx.fillText(result.name, x + (dexLogo ? 44 : 14), y + 22);
+    ctx.fillStyle = result.net < 0 ? "#ff7b7b" : "#57c0a6";
+    ctx.font = "800 19px Menlo, monospace";
+    ctx.textAlign = "right";
+    ctx.fillText(currencyFormatter.format(result.net), x + 302, y + 38);
+    ctx.textAlign = "left";
+  }
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.44)";
+  ctx.font = "800 12px Menlo, monospace";
+  ctx.fillText(`Gross ${currencyFormatter.format(stack.gross)} · PnL ${formatSignedCurrency(stack.pnl)}`, 34, height - 30);
+  ctx.textAlign = "right";
+  ctx.fillText("perp-hub.com", width - 34, height - 30);
+  ctx.textAlign = "left";
+
+  return canvas;
+}
+
+async function saveStackShareImage() {
+  downloadCanvasAs(await drawStackShareCard(calculateStack()), "perphub-points-stack-card.png");
+}
+
+async function copyStackShareImage() {
+  const canvas = await drawStackShareCard(calculateStack());
+  const blob = await canvasToBlob(canvas);
+
+  try {
+    if (!blob || !navigator.clipboard || !window.ClipboardItem) throw new Error("Clipboard image is unavailable");
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+    elements.stackCopyCardButton.textContent = "Copied";
+  } catch {
+    downloadCanvasAs(canvas, "perphub-points-stack-card.png");
+    elements.stackCopyCardButton.textContent = "Saved";
+  }
+
+  setTimeout(() => {
+    elements.stackCopyCardButton.textContent = "Copy Image";
+  }, 1400);
+}
+
+function shareStackOnX() {
+  const text = encodeURIComponent(getStackShareText());
   window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank", "noopener,noreferrer");
 }
 
@@ -687,15 +1138,25 @@ function bindSyncedControl(input, range) {
 }
 
 function setTab(tabName, options = {}) {
-  const targetTab = ["home", "calculator", "vooi", "boost", "wheel"].includes(tabName) ? tabName : "home";
+  const targetTab = ["home", "calculator", "stack", "vooi", "boost", "wheel"].includes(tabName) ? tabName : "home";
   const previousTab = getStoredTab();
 
   elements.tabButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.tab === targetTab);
   });
+  elements.moreButtons.forEach((button) => {
+    button.classList.toggle("active", targetTab === "stack" || targetTab === "wheel");
+    button.setAttribute("aria-expanded", "false");
+  });
+  elements.moreMenus.forEach((menu) => {
+    menu.classList.remove("open");
+  });
+  elements.burgerMenu?.classList.remove("open");
+  elements.burgerButton?.setAttribute("aria-expanded", "false");
 
   elements.homeTab.classList.toggle("active", targetTab === "home");
   elements.calculatorTab.classList.toggle("active", targetTab === "calculator");
+  elements.stackTab.classList.toggle("active", targetTab === "stack");
   elements.vooiTab.classList.toggle("active", targetTab === "vooi");
   elements.boostTab.classList.toggle("active", targetTab === "boost");
   elements.wheelTab.classList.toggle("active", targetTab === "wheel");
@@ -948,6 +1409,33 @@ function loadVooiVideo() {
   elements.vooiVideo.appendChild(mobileLink);
 }
 
+function closeMoreMenus() {
+  elements.moreMenus.forEach((menu) => menu.classList.remove("open"));
+  elements.moreButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+}
+
+function closeBurgerMenu() {
+  elements.burgerMenu?.classList.remove("open");
+  elements.burgerButton?.setAttribute("aria-expanded", "false");
+}
+
+function toggleMoreMenu(button) {
+  const menu = button.closest(".more-menu");
+  const shouldOpen = !menu.classList.contains("open");
+
+  closeMoreMenus();
+  menu.classList.toggle("open", shouldOpen);
+  button.setAttribute("aria-expanded", String(shouldOpen));
+}
+
+function toggleBurgerMenu() {
+  const shouldOpen = !elements.burgerMenu?.classList.contains("open");
+
+  closeMoreMenus();
+  elements.burgerMenu?.classList.toggle("open", shouldOpen);
+  elements.burgerButton?.setAttribute("aria-expanded", String(shouldOpen));
+}
+
 elements.userPoints.addEventListener("input", calculate);
 elements.includePnl.addEventListener("change", calculate);
 elements.tradingPnl.addEventListener("input", calculate);
@@ -971,6 +1459,9 @@ elements.wheelResultCard?.addEventListener("click", (event) => {
 elements.shareModal.addEventListener("click", (event) => {
   if (event.target === elements.shareModal) closeShareCard();
 });
+elements.stackShareModal?.addEventListener("click", (event) => {
+  if (event.target === elements.stackShareModal) closeStackShareCard();
+});
 elements.coffeeModal.addEventListener("click", (event) => {
   if (event.target === elements.coffeeModal) closeCoffeeModal();
 });
@@ -978,12 +1469,21 @@ elements.coffeeModal.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeShareCard();
+    closeStackShareCard();
     closeCoffeeModal();
     closeWheelResultCard();
+    closeMoreMenus();
+    closeBurgerMenu();
   }
 });
 
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".more-menu")) closeMoreMenus();
+  if (!event.target.closest(".burger-menu")) closeBurgerMenu();
+});
+
 window.addEventListener("resize", calculate);
+window.addEventListener("resize", calculateStack);
 
 elements.controlModeButtons.forEach((button) => {
   button.addEventListener("click", () => setControlMode(button.dataset.controlMode));
@@ -997,6 +1497,34 @@ elements.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setTab(button.dataset.tab));
 });
 
+elements.moreButtons.forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleMoreMenu(button);
+  });
+});
+
+elements.stackInputs.forEach((input) => {
+  input.addEventListener("input", calculateStack);
+  input.addEventListener("change", calculateStack);
+});
+
+elements.stackShareButton?.addEventListener("click", openStackShareCard);
+elements.stackShareCloseButton?.addEventListener("click", closeStackShareCard);
+elements.stackSaveCardButton?.addEventListener("click", saveStackShareImage);
+elements.stackCopyCardButton?.addEventListener("click", copyStackShareImage);
+elements.stackShareXButton?.addEventListener("click", shareStackOnX);
+
+elements.burgerButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleBurgerMenu();
+});
+
+elements.mobileCoffeeButton?.addEventListener("click", () => {
+  closeBurgerMenu();
+  openCoffeeModal();
+});
+
 if (elements.homeLogoButton) {
   elements.homeLogoButton.addEventListener("click", () => setTab("home"));
 }
@@ -1006,7 +1534,8 @@ elements.homeActionButtons.forEach((button) => {
 });
 
 window.addEventListener("hashchange", () => {
-  setTab(tabFromHash() ?? "home", { updateHash: false });
+  const nextTab = tabFromHash();
+  if (nextTab) setTab(nextTab, { updateHash: false });
 });
 
 elements.evmWalletLabel.textContent = DONATION_WALLETS.evm;
@@ -1020,3 +1549,10 @@ setEstimateMode(activeEstimateMode);
 updatePnlState();
 syncAllRanges();
 calculate();
+setupStackNumberHints();
+renderShareBgPicker();
+applyShareCardBackground();
+renderStackBgPicker();
+applyStackCardBackground();
+calculateStack();
+document.body.classList.remove("app-loading");
