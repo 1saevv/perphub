@@ -115,6 +115,8 @@ const calculatorDexLinks = {
   Lighter: "https://robinhoodchain.lighter.xyz/?referral=PERP&source=none",
   Extended: "https://app.extended.exchange/join/1SAEVV",
   Ostium: "https://ultra.vooi.io/i/S9UDFLJC",
+  Variational: "https://omni.variational.io/?ref=OMNIALEKZZ",
+  Hibachi: "https://hibachi.xyz/r/1saevv",
 };
 
 const elements = {
