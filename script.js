@@ -1,8 +1,26 @@
 const DEFAULT_REWARD_POOL_LIT = 11000000;
+const AUTO_WEEKLY_POINTS = 100000;
+const DEFAULT_OTC_PRICE_PER_POINT = 0.85;
+const simpleDexDefaults = {
+  Extended: { points: 250, otcPrice: 0.85 },
+  Ostium: { points: 750, otcPrice: 0.4 },
+  Variational: { points: 500, otcPrice: 19 },
+  RiseX: { points: 200, otcPrice: 3 },
+  Hibachi: { points: 600, otcPrice: 0.1 },
+};
+const calculatorDexBrands = {
+  Lighter: { label: "Lighter x Robinhood", logo: "logoRL.png" },
+  Extended: { label: "Extended", logo: "Extendedlogo.jpg" },
+  Ostium: { label: "Ostium", logo: "ostiumlogo.jpg" },
+  Variational: { label: "Variational", logo: "variationallogo.jpg" },
+  RiseX: { label: "RiseX", logo: "risexlogo.png" },
+  Hibachi: { label: "Hibachi", logo: "hibachilogo.png" },
+};
 const ACTIVE_TAB_STORAGE_KEY = "perphub.activeTab";
+const ACTIVE_DEX_STORAGE_KEY = "perphub.calculatorDex";
 const tabHashByName = {
   home: "",
-  calculator: "lighter",
+  calculator: "calculator",
   stack: "points-stack",
   vooi: "strategies",
   boost: "boost",
@@ -49,6 +67,8 @@ const STACK_CARD_BACKGROUNDS = [
 ];
 let activeShareCardBackground = 0;
 let activeStackCardBackground = 0;
+let activeCalculatorMode = "auto";
+let activeEstimateMode = "season";
 
 const defaults = {
   userPoints: 16.8,
@@ -91,13 +111,19 @@ const estimateModes = {
   },
 };
 
-let activeEstimateMode = "season";
+const calculatorDexLinks = {
+  Lighter: "https://robinhoodchain.lighter.xyz/?referral=PERP&source=none",
+  Extended: "https://app.extended.exchange/join/1SAEVV",
+  Ostium: "https://ultra.vooi.io/i/S9UDFLJC",
+};
 
 const elements = {
   rewardPoolLabel: document.querySelector("#rewardPoolLabel"),
   userPoints: document.querySelector("#userPoints"),
   userPointsLabel: document.querySelector("#userPointsLabel"),
+  tokenPriceLabel: document.querySelector("#tokenPriceLabel"),
   litPrice: document.querySelector("#litPrice"),
+  customOtcPrice: document.querySelector("#customOtcPrice"),
   includePnl: document.querySelector("#includePnl"),
   tradingPnl: document.querySelector("#tradingPnl"),
   litPriceRange: document.querySelector("#litPriceRange"),
@@ -108,21 +134,34 @@ const elements = {
   manualTotalPointsRange: document.querySelector("#manualTotalPointsRange"),
   totalPointsRangeLabel: document.querySelector("#totalPointsRangeLabel"),
   manualTotalPointsOutput: document.querySelector("#manualTotalPointsOutput"),
+  autoWeeksRange: document.querySelector("#autoWeeksRange"),
+  autoWeeksOutput: document.querySelector("#autoWeeksOutput"),
+  autoAssumptionsLabel: document.querySelector("#autoAssumptionsLabel"),
   totalPointsMinLabel: document.querySelector("#totalPointsMinLabel"),
   totalPointsMaxLabel: document.querySelector("#totalPointsMaxLabel"),
   estimatedLit: document.querySelector("#estimatedLit"),
+  estimatedAllocationLabel: document.querySelector("#estimatedAllocationLabel"),
   estimatedUsd: document.querySelector("#estimatedUsd"),
+  estimatedUsdLabel: document.querySelector("#estimatedUsdLabel"),
   netProfit: document.querySelector("#netProfit"),
   pnlBreakdown: document.querySelector("#pnlBreakdown"),
   valuePerPointLit: document.querySelector("#valuePerPointLit"),
+  valuePerPointLabel: document.querySelector("#valuePerPointLabel"),
   valuePerPointUsd: document.querySelector("#valuePerPointUsd"),
   userShareLabel: document.querySelector("#userShareLabel"),
   userShare: document.querySelector("#userShare"),
   priceScenarios: document.querySelector("#priceScenarios"),
   copyButton: document.querySelector("#copyButton"),
+  dexSelect: document.querySelector("#dexSelect"),
+  dexMenu: document.querySelector("#dexMenu"),
+  dexMenuButton: document.querySelector("#dexMenuButton"),
+  dexMenuLogo: document.querySelector("#dexMenuLogo"),
+  dexMenuLabel: document.querySelector("#dexMenuLabel"),
+  dexMenuOptions: document.querySelectorAll("[data-dex-option]"),
+  calculatorTradeButton: document.querySelector("#calculatorTradeButton"),
+  calculatorModeButtons: document.querySelectorAll("[data-calculator-mode]"),
   inputsPanel: document.querySelector(".inputs-panel"),
   controlModeButtons: document.querySelectorAll("[data-control-mode]"),
-  estimateModeButtons: document.querySelectorAll("[data-estimate-mode]"),
   tabButtons: document.querySelectorAll("[data-tab]"),
   moreMenus: document.querySelectorAll(".more-menu"),
   moreButtons: document.querySelectorAll(".more-button"),
@@ -173,13 +212,18 @@ const elements = {
   chartGrid: document.querySelector("#chartGrid"),
   shareModal: document.querySelector("#shareModal"),
   shareCard: document.querySelector("#shareCard"),
+  shareProgramLogo: document.querySelector("#shareProgramLogo"),
+  shareProgramText: document.querySelector("#shareProgramText"),
   shareBgPicker: document.querySelector("#shareBgPicker"),
   shareCloseButton: document.querySelector("#shareCloseButton"),
+  sharePrimaryLabel: document.querySelector("#sharePrimaryLabel"),
   shareLit: document.querySelector("#shareLit"),
+  shareUsdLabel: document.querySelector("#shareUsdLabel"),
   shareUsd: document.querySelector("#shareUsd"),
   sharePnl: document.querySelector("#sharePnl"),
   shareNetProfit: document.querySelector("#shareNetProfit"),
   sharePrice: document.querySelector("#sharePrice"),
+  sharePriceLabel: document.querySelector("#sharePriceLabel"),
   shareValuePoint: document.querySelector("#shareValuePoint"),
   saveCardButton: document.querySelector("#saveCardButton"),
   copyCardButton: document.querySelector("#copyCardButton"),
@@ -248,15 +292,55 @@ function setStoredTab(tabName) {
 
 function tabFromHash() {
   const hash = window.location.hash.replace(/^#/, "").trim().toLowerCase();
-  return tabNameByHash[hash] ?? null;
+  const [tabHash] = hash.split("/");
+  return tabNameByHash[tabHash] ?? null;
+}
+
+function normalizeLegacyCalculatorHash() {
+  const hash = window.location.hash.replace(/^#/, "").trim();
+  if (!hash.toLowerCase().startsWith("lighter")) return;
+  const [, dexHash] = hash.split("/");
+  const nextHash = dexHash ? `#calculator/${dexHash}` : "#calculator/lighter";
+  window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${nextHash}`);
 }
 
 function updateTabHash(tabName) {
-  const nextHash = tabHashByName[tabName] ? `#${tabHashByName[tabName]}` : window.location.pathname + window.location.search;
+  const calculatorDexHash = tabName === "calculator" ? `/${selectedDexHash()}` : "";
+  const nextHash = tabHashByName[tabName] ? `#${tabHashByName[tabName]}${calculatorDexHash}` : window.location.pathname + window.location.search;
   const nextUrl = tabHashByName[tabName] ? `${window.location.pathname}${window.location.search}${nextHash}` : nextHash;
 
   if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== nextUrl) {
     window.history.replaceState(null, "", nextUrl);
+  }
+}
+
+function selectedDexHash() {
+  return (elements.dexSelect?.value || "Lighter").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
+function dexFromHash() {
+  const [, dexHash] = window.location.hash.replace(/^#/, "").trim().toLowerCase().split("/");
+  if (!dexHash) return null;
+  return Array.from(elements.dexSelect?.options || []).find((option) => selectedDexSlug(option.value) === dexHash)?.value ?? null;
+}
+
+function selectedDexSlug(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
+function getStoredDex() {
+  try {
+    return localStorage.getItem(ACTIVE_DEX_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setStoredDex(dexName) {
+  try {
+    localStorage.setItem(ACTIVE_DEX_STORAGE_KEY, dexName);
+  } catch {
+    // The calculator should still work if storage is unavailable.
   }
 }
 
@@ -441,12 +525,17 @@ function updateControlLabels() {
   const litPrice = numericValue(elements.litPrice);
   const totalPoints = numericValue(elements.manualTotalPoints);
   const mode = estimateModes[activeEstimateMode];
+  const isSimpleDex = elements.dexSelect?.value !== "Lighter";
 
   elements.litPriceOutput.textContent = currencyFormatter.format(litPrice);
   elements.manualTotalPointsOutput.textContent = formatCompact(totalPoints);
   elements.rewardPoolLabel.textContent = `${numberFormatter.format(DEFAULT_REWARD_POOL_LIT)} LIT`;
-  elements.userPointsLabel.textContent = mode.userPointsLabel;
-  elements.totalPointsLabel.textContent = mode.totalPointsLabel;
+  elements.userPointsLabel.textContent = isSimpleDex ? "Your Season Points" : mode.userPointsLabel;
+  elements.tokenPriceLabel.textContent = isSimpleDex ? "OTC Price / Point" : "LIT Price";
+  elements.estimatedAllocationLabel.textContent = isSimpleDex ? "Your Points" : "Estimated LIT Allocation";
+  elements.estimatedUsdLabel.textContent = isSimpleDex ? "Estimated OTC Value" : "Estimated USD Value";
+  elements.valuePerPointLabel.textContent = isSimpleDex ? "OTC Price / Point" : "Estimated Value per Point";
+  if (elements.totalPointsLabel) elements.totalPointsLabel.textContent = mode.totalPointsLabel;
   elements.totalPointsRangeLabel.textContent = mode.totalPointsLabel;
   elements.totalPointsMinLabel.textContent = mode.minLabel;
   elements.totalPointsMaxLabel.textContent = mode.maxLabel;
@@ -454,6 +543,10 @@ function updateControlLabels() {
 }
 
 function calculate() {
+  if (elements.dexSelect?.value !== "Lighter") return calculateSimpleDex();
+
+  applyAutoCalculatorValues();
+
   const userPoints = numericValue(elements.userPoints);
   const litPrice = numericValue(elements.litPrice);
   const tradingPnl = elements.includePnl.checked ? signedNumericValue(elements.tradingPnl) : 0;
@@ -491,6 +584,40 @@ function calculate() {
     netProfit,
     estimatedValuePerPointLit,
     estimatedValuePerPointUsd,
+  };
+}
+
+function calculateSimpleDex() {
+  updateSimpleDexInputs();
+
+  const userPoints = numericValue(elements.userPoints);
+  const otcPrice = numericValue(elements.litPrice);
+  const tradingPnl = elements.includePnl.checked ? signedNumericValue(elements.tradingPnl) : 0;
+  const estimatedUsd = userPoints * otcPrice;
+  const netProfit = estimatedUsd + tradingPnl;
+
+  elements.estimatedLit.textContent = `${numberFormatter.format(userPoints)} points`;
+  elements.estimatedUsd.textContent = currencyFormatter.format(estimatedUsd);
+  elements.netProfit.textContent = currencyFormatter.format(netProfit);
+  elements.pnlBreakdown.textContent = formatPnlBreakdown(tradingPnl);
+  elements.netProfit.closest(".result-card").classList.toggle("is-negative", netProfit < 0);
+  elements.valuePerPointLit.textContent = `${currencyFormatter.format(otcPrice)} / point`;
+  elements.valuePerPointUsd.textContent = "OTC value";
+  elements.userShare.textContent = "-";
+  updateControlLabels();
+  updatePnlState();
+
+  return {
+    estimateMode: "season",
+    userPoints,
+    litPrice: otcPrice,
+    tradingPnl,
+    totalSeasonPoints: userPoints,
+    estimatedLit: userPoints,
+    estimatedUsd,
+    netProfit,
+    estimatedValuePerPointLit: otcPrice,
+    estimatedValuePerPointUsd: otcPrice,
   };
 }
 
@@ -720,6 +847,20 @@ function renderPriceScenarios(estimatedLit) {
 }
 
 function getShareText(result) {
+  if (elements.dexSelect?.value !== "Lighter") {
+    const dexName = elements.dexSelect?.value || "DEX";
+
+    return [
+      `${dexName} Estimate`,
+      "",
+      `Season Points: ${numberFormatter.format(result.userPoints)}`,
+      `OTC Price / Point: ${currencyFormatter.format(result.litPrice)}`,
+      `Estimated Value: ${currencyFormatter.format(result.estimatedUsd)}`,
+      `Trading PnL: ${formatSignedCurrency(result.tradingPnl)}`,
+      `Net Profit: ${currencyFormatter.format(result.netProfit)}`,
+    ].join("\n");
+  }
+
   const mode = estimateModes[result.estimateMode];
 
   return [
@@ -737,16 +878,51 @@ function getShareText(result) {
 }
 
 function getXShareText(result) {
+  if (elements.dexSelect?.value !== "Lighter") {
+    const dexName = elements.dexSelect?.value || "DEX";
+    return `My ${dexName} points estimate: ${numberFormatter.format(result.userPoints)} points / ${currencyFormatter.format(result.estimatedUsd)}. Net incl. PnL: ${currencyFormatter.format(result.netProfit)}.\nCalculated on PerpHub.`;
+  }
+
   return `My Lighter points estimate: ${formatLit(result.estimatedLit)} / ${currencyFormatter.format(result.estimatedUsd)}. Net incl. PnL: ${currencyFormatter.format(result.netProfit)}.\nCalculated on PerpHub.`;
 }
 
+function selectedCalculatorBrand() {
+  return calculatorDexBrands[elements.dexSelect?.value || "Lighter"] ?? calculatorDexBrands.Lighter;
+}
+
+function updateDexMenu() {
+  const selectedDex = elements.dexSelect?.value || "Lighter";
+  const optionButton = Array.from(elements.dexMenuOptions || []).find((button) => button.dataset.dexOption === selectedDex);
+  const logo = optionButton?.querySelector("img")?.getAttribute("src") || "lighterlogo.jpg";
+
+  elements.dexMenuLogo.src = logo;
+  elements.dexMenuLabel.textContent = selectedDex;
+  elements.dexMenuOptions.forEach((button) => {
+    button.classList.toggle("active", button.dataset.dexOption === selectedDex);
+  });
+}
+
 function updateShareCard(result) {
-  elements.shareLit.textContent = formatLit(result.estimatedLit);
-  elements.shareUsd.textContent = currencyFormatter.format(result.estimatedUsd);
+  const isLighter = elements.dexSelect?.value === "Lighter";
+  const brand = selectedCalculatorBrand();
+
+  elements.shareCard.classList.toggle("simple-dex-share", !isLighter);
+  elements.sharePrimaryLabel.textContent = isLighter ? "Estimated LIT Allocation" : "USD Airdrop";
+  elements.shareLit.textContent = isLighter ? formatLit(result.estimatedLit) : currencyFormatter.format(result.estimatedUsd);
+  elements.shareUsdLabel.textContent = isLighter ? "USD Drop" : "Season Points";
+  elements.shareUsd.textContent = isLighter ? currencyFormatter.format(result.estimatedUsd) : `${numberFormatter.format(result.userPoints)} points`;
   elements.sharePnl.textContent = formatSignedCurrency(result.tradingPnl);
   elements.shareNetProfit.textContent = currencyFormatter.format(result.netProfit);
+  elements.sharePriceLabel.textContent = isLighter ? "LIT Price" : "OTC Price / Point";
   elements.sharePrice.textContent = currencyFormatter.format(result.litPrice);
-  elements.shareValuePoint.textContent = formatLitPerPoint(result.estimatedValuePerPointLit);
+  elements.shareValuePoint.textContent = isLighter ? formatLitPerPoint(result.estimatedValuePerPointLit) : `${currencyFormatter.format(result.litPrice)} / point`;
+  elements.shareProgramLogo.alt = brand.label;
+  elements.shareProgramLogo.classList.toggle("hidden", !brand.logo);
+  elements.shareProgramText.classList.toggle("hidden", isLighter);
+  elements.shareProgramText.textContent = brand.label;
+  if (brand.logo) {
+    elements.shareProgramLogo.src = brand.logo;
+  }
 }
 
 function openShareCard() {
@@ -790,6 +966,12 @@ function fitText(ctx, text, maxWidth, startSize, weight = 800) {
 }
 
 async function drawShareCard(result) {
+  const isLighter = elements.dexSelect?.value === "Lighter";
+  const brand = selectedCalculatorBrand();
+  const primaryLabel = isLighter ? "Estimated LIT Allocation" : "USD Airdrop";
+  const primaryValue = isLighter ? formatLit(result.estimatedLit) : currencyFormatter.format(result.estimatedUsd);
+  const priceLabel = isLighter ? "LIT Price" : "OTC Price";
+  const footerValue = isLighter ? formatLitPerPoint(result.estimatedValuePerPointLit) : `${currencyFormatter.format(result.litPrice)} / point`;
   const canvas = document.createElement("canvas");
   const scale = 2;
   const width = 728;
@@ -841,23 +1023,40 @@ async function drawShareCard(result) {
     ctx.fillText("PerpHub", 34, 32);
   }
 
-  const programLogo = await loadImage("logoRL.png");
-  if (programLogo) {
+  const programLogo = brand.logo ? await loadImage(brand.logo) : null;
+  if (programLogo && isLighter) {
     ctx.drawImage(programLogo, width - 254, -2, 220, 74);
+  } else if (programLogo) {
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 20px Menlo, monospace";
+    const textWidth = ctx.measureText(brand.label).width;
+    const logoSize = 24;
+    const right = width - 34;
+    const logoX = right - textWidth - 10 - logoSize;
+    ctx.drawImage(programLogo, logoX, 16, logoSize, logoSize);
+    ctx.fillText(brand.label, right, 36);
+    ctx.textAlign = "left";
+  } else {
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 20px Menlo, monospace";
+    ctx.fillText(brand.label, width - 34, 36);
+    ctx.textAlign = "left";
   }
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
   ctx.font = "800 13px Menlo, monospace";
-  ctx.fillText("Estimated LIT Allocation", 34, 154);
+  ctx.fillText(primaryLabel, 34, 154);
   ctx.fillStyle = "#ccff00";
-  fitText(ctx, formatLit(result.estimatedLit), width - 68, 70, 800);
-  ctx.fillText(formatLit(result.estimatedLit), 34, 238);
+  fitText(ctx, primaryValue, width - 68, 70, 800);
+  ctx.fillText(primaryValue, 34, 238);
 
   const metrics = [
-    ["USD Drop", currencyFormatter.format(result.estimatedUsd)],
+    [isLighter ? "USD Drop" : "Season Points", isLighter ? currencyFormatter.format(result.estimatedUsd) : `${numberFormatter.format(result.userPoints)} points`],
     ["Trading PnL", formatSignedCurrency(result.tradingPnl)],
     ["Net Profit", currencyFormatter.format(result.netProfit)],
-    ["LIT Price", currencyFormatter.format(result.litPrice)],
+    [priceLabel, currencyFormatter.format(result.litPrice)],
   ];
   metrics.forEach(([label, value], index) => {
     const x = 34 + index * 170;
@@ -872,7 +1071,7 @@ async function drawShareCard(result) {
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.44)";
   ctx.font = "800 12px Menlo, monospace";
-  ctx.fillText(formatLitPerPoint(result.estimatedValuePerPointLit), 34, height - 30);
+  ctx.fillText(footerValue, 34, height - 30);
   ctx.textAlign = "right";
   ctx.fillText("perp-hub.com", width - 34, height - 30);
   ctx.textAlign = "left";
@@ -1363,20 +1562,67 @@ function setControlMode(nextMode) {
   });
 }
 
-function setEstimateMode(nextMode) {
-  activeEstimateMode = estimateModes[nextMode] ? nextMode : "season";
+function syncEstimateRangeSettings() {
   const mode = estimateModes[activeEstimateMode];
 
   elements.manualTotalPointsRange.min = mode.min;
   elements.manualTotalPointsRange.max = mode.max;
   elements.manualTotalPointsRange.step = mode.step;
   syncRangeFromInput(elements.manualTotalPoints, elements.manualTotalPointsRange);
+}
 
-  elements.estimateModeButtons.forEach((button) => {
-    button.classList.toggle("active", button.dataset.estimateMode === activeEstimateMode);
-  });
+function applyAutoCalculatorValues() {
+  if (elements.dexSelect?.value === "Lighter" || activeCalculatorMode !== "auto") return;
+
+  const weeks = Number(elements.autoWeeksRange?.value) || 1;
+  elements.manualTotalPoints.value = AUTO_WEEKLY_POINTS * weeks;
+  syncRangeFromInput(elements.manualTotalPoints, elements.manualTotalPointsRange);
+  updateRangeFill(elements.autoWeeksRange);
+  elements.autoWeeksOutput.textContent = `${weeks} ${weeks === 1 ? "week" : "weeks"}`;
+  elements.autoAssumptionsLabel.textContent = "Uses average distribution of 100K points per week.";
+}
+
+function updateSimpleDexInputs() {
+  const isCustomPrice = elements.customOtcPrice?.checked;
+  const selectedDex = elements.dexSelect?.value || "";
+  const dexDefaults = simpleDexDefaults[selectedDex] ?? { otcPrice: DEFAULT_OTC_PRICE_PER_POINT };
+
+  elements.litPrice.disabled = !isCustomPrice;
+  if (!isCustomPrice) elements.litPrice.value = dexDefaults.otcPrice;
+  elements.litPriceOutput.textContent = currencyFormatter.format(numericValue(elements.litPrice));
+}
+
+function setCalculatorMode(nextMode) {
+  if (elements.dexSelect?.value === "Lighter") {
+    activeEstimateMode = estimateModes[nextMode] ? nextMode : "season";
+    syncEstimateRangeSettings();
+    updateCalculatorModeControls();
+    calculate();
+    return;
+  }
+
+  activeCalculatorMode = nextMode === "manual" ? "manual" : "auto";
+
+  elements.inputsPanel.classList.toggle("auto-mode", activeCalculatorMode === "auto");
+  updateCalculatorModeControls();
 
   calculate();
+}
+
+function updateCalculatorModeControls() {
+  const isLighter = elements.dexSelect?.value === "Lighter";
+  const labels = isLighter ? ["Season Total", "Weekly Pace"] : ["Auto", "Manual"];
+  const modes = isLighter ? ["season", "weekly"] : ["auto", "manual"];
+  const activeMode = isLighter ? activeEstimateMode : activeCalculatorMode;
+
+  elements.inputsPanel.classList.toggle("auto-mode", false);
+  elements.inputsPanel.classList.toggle("simple-dex-mode", !isLighter);
+  elements.calculatorTab.classList.toggle("simple-dex", !isLighter);
+  elements.calculatorModeButtons.forEach((button, index) => {
+    button.textContent = labels[index];
+    button.dataset.calculatorMode = modes[index];
+    button.classList.toggle("active", modes[index] === activeMode);
+  });
 }
 
 function updatePnlState() {
@@ -1384,6 +1630,41 @@ function updatePnlState() {
 
   elements.tradingPnl.disabled = !isEnabled;
   elements.tradingPnl.closest(".pnl-field").classList.toggle("is-disabled", !isEnabled);
+}
+
+function updateCalculatorTradeButton() {
+  const selectedDex = elements.dexSelect?.value || "Lighter";
+  const href = calculatorDexLinks[selectedDex];
+  const currentTab = tabFromHash() ?? getStoredTab();
+
+  setStoredDex(selectedDex);
+  if (currentTab === "calculator") updateTabHash("calculator");
+
+  if (selectedDex !== "Lighter") activeEstimateMode = "season";
+  if (selectedDex === "Lighter") {
+    elements.litPrice.disabled = false;
+    if (numericValue(elements.litPrice) === DEFAULT_OTC_PRICE_PER_POINT) elements.litPrice.value = defaults.litPrice;
+  } else {
+    const dexDefaults = simpleDexDefaults[selectedDex];
+    if (dexDefaults?.points) elements.userPoints.value = dexDefaults.points;
+    if (!elements.customOtcPrice?.checked && dexDefaults?.otcPrice) elements.litPrice.value = dexDefaults.otcPrice;
+  }
+
+  elements.calculatorTradeButton.textContent = selectedDex === "Lighter" ? "Open Lighter x Robinhood" : `Open ${selectedDex}`;
+  elements.calculatorTradeButton.href = href || "#";
+  elements.calculatorTradeButton.classList.toggle("is-disabled", !href);
+  elements.calculatorTradeButton.setAttribute("aria-disabled", String(!href));
+  elements.rewardPoolLabel.closest(".pool-card").classList.toggle("is-hidden", selectedDex !== "Lighter");
+  updateDexMenu();
+  updateCalculatorModeControls();
+  syncEstimateRangeSettings();
+  calculate();
+}
+
+function applyStoredDex() {
+  const nextDex = dexFromHash() ?? getStoredDex();
+  const option = Array.from(elements.dexSelect?.options || []).find((item) => item.value === nextDex);
+  if (option) elements.dexSelect.value = option.value;
 }
 
 function loadVooiVideo() {
@@ -1442,6 +1723,22 @@ elements.tradingPnl.addEventListener("input", calculate);
 bindSyncedControl(elements.litPrice, elements.litPriceRange);
 bindSyncedControl(elements.manualTotalPoints, elements.manualTotalPointsRange);
 elements.copyButton.addEventListener("click", openShareCard);
+elements.dexSelect?.addEventListener("change", updateCalculatorTradeButton);
+elements.dexMenuButton?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  elements.dexMenu.classList.toggle("open");
+  elements.dexMenuButton.setAttribute("aria-expanded", String(elements.dexMenu.classList.contains("open")));
+});
+elements.dexMenuOptions.forEach((button) => {
+  button.addEventListener("click", () => {
+    elements.dexSelect.value = button.dataset.dexOption;
+    elements.dexMenu.classList.remove("open");
+    elements.dexMenuButton.setAttribute("aria-expanded", "false");
+    updateCalculatorTradeButton();
+  });
+});
+elements.autoWeeksRange?.addEventListener("input", calculate);
+elements.customOtcPrice?.addEventListener("change", calculate);
 elements.shareCloseButton.addEventListener("click", closeShareCard);
 elements.saveCardButton.addEventListener("click", saveShareImage);
 elements.copyCardButton.addEventListener("click", copyShareImage);
@@ -1480,6 +1777,10 @@ document.addEventListener("keydown", (event) => {
 document.addEventListener("click", (event) => {
   if (!event.target.closest(".more-menu")) closeMoreMenus();
   if (!event.target.closest(".burger-menu")) closeBurgerMenu();
+  if (!event.target.closest(".dex-menu")) {
+    elements.dexMenu?.classList.remove("open");
+    elements.dexMenuButton?.setAttribute("aria-expanded", "false");
+  }
 });
 
 window.addEventListener("resize", calculate);
@@ -1489,8 +1790,8 @@ elements.controlModeButtons.forEach((button) => {
   button.addEventListener("click", () => setControlMode(button.dataset.controlMode));
 });
 
-elements.estimateModeButtons.forEach((button) => {
-  button.addEventListener("click", () => setEstimateMode(button.dataset.estimateMode));
+elements.calculatorModeButtons.forEach((button) => {
+  button.addEventListener("click", () => setCalculatorMode(button.dataset.calculatorMode));
 });
 
 elements.tabButtons.forEach((button) => {
@@ -1544,8 +1845,12 @@ elements.walletCopyButtons.forEach((button) => {
   button.addEventListener("click", () => copyWallet(button.dataset.walletCopy, button));
 });
 
+normalizeLegacyCalculatorHash();
+applyStoredDex();
 setTab(tabFromHash() ?? getStoredTab(), { updateHash: !tabFromHash() });
-setEstimateMode(activeEstimateMode);
+setCalculatorMode(activeCalculatorMode);
+syncEstimateRangeSettings();
+updateCalculatorTradeButton();
 updatePnlState();
 syncAllRanges();
 calculate();

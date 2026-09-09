@@ -17,8 +17,7 @@
 
         <nav class="tabs" aria-label="Tools">
           <button class="tab-button" type="button" data-tab="calculator">
-            <img class="tab-icon" src="lighterlogoforhedder.png" alt="" />
-            <span>Lighter</span>
+            <span>Calculator</span>
           </button>
           <button class="tab-button" type="button" data-tab="vooi">
             <img class="tab-icon" src="hedderstrategieslogo.png" alt="" />
@@ -72,8 +71,7 @@
 
       <nav class="mobile-tabs" aria-label="Mobile tools">
         <button class="tab-button" type="button" data-tab="calculator">
-          <img class="tab-icon" src="lighterlogoforhedder.png" alt="" />
-          <span>Lighter</span>
+          <span>Calculator</span>
         </button>
         <button class="tab-button" type="button" data-tab="vooi">
           <img class="tab-icon" src="hedderstrategieslogo.png" alt="" />
@@ -121,8 +119,39 @@
       <section class="tab-panel" id="calculatorTab">
         <section class="hero-row">
           <div>
-            <h1>Lighter Points Desk</h1>
-            <p class="hero-subtitle">Turn your Lighter points into a clear LIT and USD estimate based on your inputs.</p>
+            <div class="calculator-toolbar">
+              <div class="dex-switcher">
+                <span>DEX</span>
+                <select class="native-dex-select" id="dexSelect" aria-label="Select DEX">
+                  <option selected>Lighter</option>
+                  <option>Extended</option>
+                  <option>Ostium</option>
+                  <option>Variational</option>
+                  <option>RiseX</option>
+                  <option>Hibachi</option>
+                </select>
+                <div class="dex-menu" id="dexMenu">
+                  <button class="dex-menu-button" id="dexMenuButton" type="button" aria-expanded="false" aria-controls="dexMenuList">
+                    <img id="dexMenuLogo" src="lighterlogo.jpg" alt="" />
+                    <span id="dexMenuLabel">Lighter</span>
+                  </button>
+                  <div class="dex-menu-list" id="dexMenuList">
+                    <button class="dex-menu-option active" type="button" data-dex-option="Lighter"><img src="lighterlogo.jpg" alt="" /><span>Lighter</span></button>
+                    <button class="dex-menu-option" type="button" data-dex-option="Extended"><img src="Extendedlogo.jpg" alt="" /><span>Extended</span></button>
+                    <button class="dex-menu-option" type="button" data-dex-option="Ostium"><img src="ostiumlogo.jpg" alt="" /><span>Ostium</span></button>
+                    <button class="dex-menu-option" type="button" data-dex-option="Variational"><img src="variationallogo.jpg" alt="" /><span>Variational</span></button>
+                    <button class="dex-menu-option" type="button" data-dex-option="RiseX"><img src="risexlogo.png" alt="" /><span>RiseX</span></button>
+                    <button class="dex-menu-option" type="button" data-dex-option="Hibachi"><img src="hibachilogo.png" alt="" /><span>Hibachi</span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="control-mode compact calculator-mode" aria-label="Calculator mode">
+                <button class="control-mode-button active" type="button" data-calculator-mode="auto">Auto</button>
+                <button class="control-mode-button" type="button" data-calculator-mode="manual">Manual</button>
+              </div>
+            </div>
+            <h1>Airdrop Calculator</h1>
+            <p class="hero-subtitle">Estimate your points share, token allocation and USD value from one clean desk.</p>
           </div>
 
           <article class="pool-card">
@@ -135,18 +164,11 @@
           <section class="panel inputs-panel">
             <div class="panel-head">
               <h2>Inputs</h2>
-              <div class="control-mode compact input-mode" aria-label="Input style">
-                <button class="control-mode-button active" type="button" data-control-mode="manual">Manual</button>
-                <button class="control-mode-button" type="button" data-control-mode="sliders">Sliders</button>
-              </div>
             </div>
 
-            <div class="mode-field">
-              <span>Calculation basis</span>
-              <div class="control-mode estimate-mode" aria-label="Calculation basis">
-                <button class="control-mode-button active" type="button" data-estimate-mode="season">Season Total</button>
-                <button class="control-mode-button" type="button" data-estimate-mode="weekly">Weekly Pace</button>
-              </div>
+            <div class="auto-assumptions">
+              <span>Auto mode</span>
+              <strong id="autoAssumptionsLabel">Uses average distribution of 100K points per week.</strong>
             </div>
 
             <div class="input-grid">
@@ -155,53 +177,63 @@
                 <input id="userPoints" type="number" min="0" step="0.01" inputmode="decimal" value="16.8" />
               </label>
 
-              <label class="field money-field price-field">
-                <span>LIT Price</span>
+              <label class="custom-otc-toggle" title="Unlock custom OTC price">
+                <input id="customOtcPrice" type="checkbox" />
+                <span>Use custom OTC price (Updated 09.09.2026)</span>
+              </label>
+
+              <label class="field money-field price-field slider-field">
+                <div class="slider-head">
+                  <span id="tokenPriceLabel">LIT Price</span>
+                  <output id="litPriceOutput">$4.70</output>
+                </div>
                 <b>$</b>
                 <input id="litPrice" type="number" min="0" step="0.01" inputmode="decimal" value="4.7" />
+                <input id="litPriceRange" type="range" min="0.5" max="20" step="0.1" value="4.7" />
+              </label>
+
+              <label class="pnl-toggle-label">
+                <input id="includePnl" type="checkbox" />
+                <span>Include Trading PnL</span>
               </label>
 
               <label class="field money-field pnl-field">
-                <span class="pnl-toggle-label">
-                  <input id="includePnl" type="checkbox" />
-                  <span>Trading PnL</span>
-                </span>
+                <span>Trading PnL</span>
                 <b>$</b>
                 <input id="tradingPnl" type="number" step="0.01" inputmode="decimal" value="0" disabled />
               </label>
             </div>
 
-            <div class="manual-controls">
-              <label class="field">
-                <span id="totalPointsLabel">Estimated Total Season Points</span>
-                <input id="manualTotalPoints" type="number" min="0" step="1" inputmode="decimal" value="250000" />
-              </label>
-            </div>
-
-            <div class="slider-controls">
+            <div class="auto-weeks-control">
               <div class="slider-field">
                 <div class="slider-head">
-                  <label id="totalPointsRangeLabel" for="manualTotalPointsRange">Estimated Total Season Points</label>
+                  <label for="autoWeeksRange">Distribution weeks</label>
+                  <output id="autoWeeksOutput">3 weeks</output>
+                </div>
+                <input id="autoWeeksRange" type="range" min="1" max="52" step="1" value="3" />
+                <div class="range-meta">
+                  <span>1 week</span>
+                  <span>52 weeks</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="manual-controls">
+              <div class="field slider-field">
+                <div class="slider-head">
+                  <label id="totalPointsRangeLabel" for="manualTotalPoints">Estimated Total Season Points</label>
                   <output id="manualTotalPointsOutput">250K</output>
                 </div>
+                <input id="manualTotalPoints" type="number" min="0" step="1" inputmode="decimal" value="250000" />
                 <input id="manualTotalPointsRange" type="range" min="100000" max="5000000" step="50000" value="250000" />
                 <div class="range-meta">
                   <span id="totalPointsMinLabel">100K points</span>
                   <span id="totalPointsMaxLabel">5M points</span>
                 </div>
               </div>
+            </div>
 
-              <div class="slider-field">
-                <div class="slider-head">
-                  <label for="litPriceRange">LIT price</label>
-                  <output id="litPriceOutput">$4.70</output>
-                </div>
-                <input id="litPriceRange" type="range" min="0.5" max="20" step="0.1" value="4.7" />
-                <div class="range-meta">
-                  <span>$0.50</span>
-                  <span>$20.00</span>
-                </div>
-              </div>
+            <div class="slider-controls">
             </div>
 
             <input class="hidden" id="rewardPool" type="number" value="11000000" />
@@ -209,7 +241,7 @@
 
           <section class="panel results-panel">
             <div class="panel-head">
-              <h2>Results</h2>
+              <h2>Estimated Airdrop</h2>
               <div class="result-actions">
                 <button class="share-button icon-share-button" id="copyButton" type="button">
                   <svg class="share-button-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -219,23 +251,23 @@
                   </svg>
                   <span>Share</span>
                 </button>
-                <a class="trade-button" href="https://robinhoodchain.lighter.xyz/?referral=PERP&source=none" target="_blank" rel="noreferrer">Open Lighter x Robinhood</a>
+                <a class="trade-button" id="calculatorTradeButton" href="https://robinhoodchain.lighter.xyz/?referral=PERP&source=none" target="_blank" rel="noreferrer">Open Lighter x Robinhood</a>
               </div>
             </div>
 
             <div class="results-grid">
               <article class="result-card">
-                <span>Estimated LIT Allocation</span>
+                <span id="estimatedAllocationLabel">Estimated LIT Allocation</span>
                 <strong id="estimatedLit">739.2 LIT</strong>
               </article>
 
-              <article class="result-card">
-                <span>Estimated USD Value</span>
+              <article class="result-card featured-result">
+                <span id="estimatedUsdLabel">Estimated USD Value</span>
                 <strong id="estimatedUsd">$3,474.24</strong>
               </article>
 
               <article class="result-card compact">
-                <span>Estimated Value per Point</span>
+                <span id="valuePerPointLabel">Estimated Value per Point</span>
                 <strong id="valuePerPointLit">44 LIT / point</strong>
                 <em id="valuePerPointUsd">$206.80 / point</em>
               </article>
@@ -557,7 +589,7 @@
             </div>
           </article>
 
-          <article class="boost-tile compact" data-mark="4%">
+          <article class="boost-tile compact hyper-boost-tile" data-mark="4%">
             <div class="boost-tile-top">
               <img class="boost-logo" src="hyperlogo.jpg" alt="Hyperliquid" loading="lazy" />
               <div class="boost-actions">
@@ -608,7 +640,31 @@
             <div class="boost-value"><span>120% rebate</span></div>
           </article>
 
-          <article class="boost-tile wide" data-mark="TOP">
+          <article class="boost-tile compact" data-mark="OMNI">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="variationallogo.jpg" alt="Variational" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://omni.variational.io/?ref=OMNIALEKZZ" target="_blank" rel="noreferrer">Trade</a>
+              </div>
+              <span>Direct</span>
+            </div>
+            <h2>Variational</h2>
+            <div class="boost-value"><span>Referral access</span></div>
+          </article>
+
+          <article class="boost-tile compact" data-mark="REF">
+            <div class="boost-tile-top">
+              <img class="boost-logo" src="hibachilogo.png" alt="Hibachi" loading="lazy" />
+              <div class="boost-actions">
+                <a class="boost-button primary" href="https://hibachi.xyz/r/1saevv" target="_blank" rel="noreferrer">Trade</a>
+              </div>
+              <span>Direct</span>
+            </div>
+            <h2>Hibachi</h2>
+            <div class="boost-value"><span>Referral access</span></div>
+          </article>
+
+          <article class="boost-tile wide lighter-boost-tile" data-mark="TOP">
             <div class="boost-tile-top">
               <img class="boost-logo" src="lighterlogo.jpg" alt="Lighter x Robinhood" loading="lazy" />
               <div class="boost-actions">
@@ -623,7 +679,7 @@
             </div>
           </article>
 
-          <article class="boost-tile mini" data-mark="20%">
+          <article class="boost-tile mini sai-boost-tile" data-mark="20%">
             <div class="boost-tile-top">
               <img class="boost-logo" src="sailogo.jpg" alt="SAI" loading="lazy" />
               <div class="boost-actions">
@@ -765,17 +821,20 @@
           <div class="share-card-content">
             <div class="share-brand">
               <img src="perphubbbbb.png" alt="PerpHub" loading="lazy" />
-              <img class="share-program-logo" src="logoRL.png" alt="Lighter x Robinhood" loading="lazy" />
+              <span class="share-program-brand">
+                <img class="share-program-logo" id="shareProgramLogo" src="logoRL.png" alt="Lighter x Robinhood" loading="lazy" />
+                <span class="share-program-text" id="shareProgramText"></span>
+              </span>
             </div>
 
             <div class="share-primary">
-              <span>Estimated LIT Allocation</span>
+              <span id="sharePrimaryLabel">Estimated LIT Allocation</span>
               <strong id="shareLit">739.2 LIT</strong>
             </div>
 
             <div class="share-metrics">
               <div>
-                <span>USD Drop</span>
+                <span id="shareUsdLabel">USD Drop</span>
                 <strong id="shareUsd">$3,474.24</strong>
               </div>
               <div>
@@ -787,7 +846,7 @@
                 <strong id="shareNetProfit">$3,474.24</strong>
               </div>
               <div>
-                <span>LIT Price</span>
+                <span id="sharePriceLabel">LIT Price</span>
                 <strong id="sharePrice">$4.70</strong>
               </div>
             </div>
