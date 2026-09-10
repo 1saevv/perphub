@@ -298,16 +298,19 @@ a {
 }
 
 .coffee-link,
-.contact-link {
+.telegram-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 12px;
   color: rgba(255, 255, 255, 0.72);
   font-size: 0.78rem;
   font-weight: 800;
   white-space: nowrap;
   transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
+}
+
+.coffee-link {
+  padding: 0 12px;
 }
 
 .coffee-link {
@@ -321,7 +324,21 @@ a {
   opacity: 0.82;
 }
 
-.contact-link:hover {
+.telegram-link {
+  gap: 7px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+}
+
+.telegram-link svg,
+.burger-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.telegram-link:hover {
   color: var(--text);
 }
 
