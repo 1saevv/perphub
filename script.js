@@ -24,6 +24,7 @@ const tabHashByName = {
   stack: "points-stack",
   vooi: "strategies",
   boost: "boost",
+  competition: "competition",
   wheel: "wheel",
 };
 const tabNameByHash = {
@@ -37,6 +38,10 @@ const tabNameByHash = {
   vooi: "vooi",
   boost: "boost",
   boosts: "boost",
+  competition: "competition",
+  competitions: "competition",
+  contest: "competition",
+  contests: "competition",
   wheel: "wheel",
 };
 const DONATION_WALLETS = {
@@ -200,6 +205,7 @@ const elements = {
   stackShareXButton: document.querySelector("#stackShareXButton"),
   vooiTab: document.querySelector("#vooiTab"),
   boostTab: document.querySelector("#boostTab"),
+  competitionTab: document.querySelector("#competitionTab"),
   wheelTab: document.querySelector("#wheelTab"),
   wheelStage: document.querySelector(".wheel-stage"),
   fortuneWheel: document.querySelector("#fortuneWheel"),
@@ -1339,7 +1345,7 @@ function bindSyncedControl(input, range) {
 }
 
 function setTab(tabName, options = {}) {
-  const targetTab = ["home", "calculator", "stack", "vooi", "boost", "wheel"].includes(tabName) ? tabName : "home";
+  const targetTab = ["home", "calculator", "stack", "vooi", "boost", "competition", "wheel"].includes(tabName) ? tabName : "home";
   const previousTab = getStoredTab();
 
   elements.tabButtons.forEach((button) => {
@@ -1360,6 +1366,7 @@ function setTab(tabName, options = {}) {
   elements.stackTab.classList.toggle("active", targetTab === "stack");
   elements.vooiTab.classList.toggle("active", targetTab === "vooi");
   elements.boostTab.classList.toggle("active", targetTab === "boost");
+  elements.competitionTab.classList.toggle("active", targetTab === "competition");
   elements.wheelTab.classList.toggle("active", targetTab === "wheel");
   setStoredTab(targetTab);
 

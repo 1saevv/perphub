@@ -6,7 +6,7 @@
     <title>PerpHub</title>
     <link rel="icon" type="image/png" sizes="512x512" href="faviconperphub-large.png?v=3" />
     <link rel="apple-touch-icon" href="faviconperphub-large.png?v=3" />
-    <link rel="stylesheet" href="styles.css?v=118" />
+    <link rel="stylesheet" href="styles.css?v=133" />
   </head>
   <body class="app-loading">
     <main class="app-shell">
@@ -26,6 +26,9 @@
           <button class="tab-button wide-label" type="button" data-tab="boost">
             <img class="tab-icon boost-tab-icon" src="boostshedder.png" alt="" />
             <span>Boost</span>
+          </button>
+          <button class="tab-button" type="button" data-tab="competition">
+            <span>Competition</span>
           </button>
           <div class="more-menu">
             <button class="tab-button more-button" type="button" id="moreButton" aria-expanded="false" aria-controls="moreMenu">
@@ -68,6 +71,9 @@
               <img class="tab-icon" src="wheellogo.png" alt="" />
               <span>Wheel</span>
             </button>
+            <button class="burger-item" type="button" data-tab="competition">
+              <span>Competition</span>
+            </button>
             <button class="burger-item burger-coffee-item" id="mobileCoffeeButton" type="button">Buy me a coffee</button>
             <a class="burger-item" href="https://t.me/+OHD6KCX_i-BiNGJk" target="_blank" rel="noreferrer">
               <svg class="burger-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -90,6 +96,9 @@
         <button class="tab-button wide-label" type="button" data-tab="boost">
           <img class="tab-icon boost-tab-icon" src="boostshedder.png" alt="" />
           <span>Boost</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="competition">
+          <span>Competition</span>
         </button>
       </nav>
 
@@ -114,6 +123,7 @@
             <span>Points stack</span>
             <span>Trading strategies</span>
             <span>Referral boosts</span>
+            <span>Competition</span>
             <span>Perp wheel</span>
           </div>
           <div class="home-actions">
@@ -121,6 +131,7 @@
             <button class="home-action" type="button" data-home-target="stack">Points Stack</button>
             <button class="home-action" type="button" data-home-target="vooi">Strategies</button>
             <button class="home-action" type="button" data-home-target="boost">Boosts</button>
+            <button class="home-action" type="button" data-home-target="competition">Competition</button>
             <button class="home-action" type="button" data-home-target="wheel">Wheel</button>
           </div>
         </section>
@@ -706,6 +717,89 @@
         </section>
       </section>
 
+      <section class="tab-panel" id="competitionTab">
+        <section class="competition-intro">
+          <div>
+            <p class="kicker">Perp competitions</p>
+            <h1>Perp Competitions</h1>
+            <p>Live and upcoming trading competitions from perp DEXs.</p>
+          </div>
+        </section>
+
+        <section class="competition-layout">
+          <article class="competition-card panel">
+            <div class="competition-card-top">
+              <div class="competition-logos" aria-hidden="true">
+                <img src="ondo.png" alt="" loading="lazy" />
+                <img src="vooilogoforPerpHub.jpg" alt="" loading="lazy" />
+              </div>
+              <span class="competition-date">Sep 16-30</span>
+              <button class="competition-info" type="button" aria-label="Competition details">
+                <span aria-hidden="true">i</span>
+                <span class="competition-tooltip" role="tooltip">
+                  <span class="competition-tooltip-section">
+                    <b>VOOI competition</b>
+                    <em>Trade ONDO perps through VOOI, climb the leaderboard and compete for a share of up to $15,000 in rewards.</em>
+                  </span>
+                  <span class="competition-tooltip-section">
+                    <b>Ondo rewards</b>
+                    <em>Eligible traders also join Ondo's weekly 175,000 USDC distribution.</em>
+                  </span>
+                  <span class="competition-tooltip-section">
+                    <b>Possible strategy</b>
+                    <em>Use a delta-neutral setup in VOOI Arbitrage Desk, for example Robinhood + Ondo, to farm Robinhood points while joining Ondo rewards and the VOOI competition.</em>
+                  </span>
+                </span>
+              </button>
+            </div>
+            <h2>Ondo x VOOI Trading Competition</h2>
+            <div class="competition-card-body">
+              <p>Trade ONDO perps on VOOI and grow the shared prize pool.</p>
+            </div>
+            <div class="competition-reward-stack">
+              <span>$2.5K -> $15,000 pool</span>
+              <span>+ 175,000 USDC weekly by Ondo</span>
+            </div>
+            <div class="competition-actions">
+              <a class="competition-button" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">Earn rewards</a>
+            </div>
+          </article>
+
+          <article class="competition-card panel">
+            <div class="competition-card-top">
+              <div class="competition-logos" aria-hidden="true">
+                <img src="robinhood.png" alt="" loading="lazy" />
+                <img src="lighterlogo.jpg" alt="" loading="lazy" />
+              </div>
+              <span class="competition-date">Ongoing</span>
+              <button class="competition-info" type="button" aria-label="Competition details">
+                <span aria-hidden="true">i</span>
+                <span class="competition-tooltip" role="tooltip">
+                  <span class="competition-tooltip-section">
+                    <b>Lighter x Robinhood points</b>
+                    <em>Trade perps on Lighter x Robinhood and earn points from the $11M LIT points pool.</em>
+                  </span>
+                  <span class="competition-tooltip-section">
+                    <b>How to earn</b>
+                    <em>Keep trading activity on eligible Robinhood perp markets and track your points as the campaign continues.</em>
+                  </span>
+                </span>
+              </button>
+            </div>
+            <h2>Lighter on Robinhood Points</h2>
+            <div class="competition-card-body">
+              <p>Trade perps on Lighter x Robinhood and earn points from the LIT points pool.</p>
+            </div>
+            <div class="competition-reward-stack">
+              <span>$11M LIT points pool</span>
+            </div>
+            <div class="competition-actions">
+              <a class="competition-button" href="https://robinhoodchain.lighter.xyz/?referral=PERP&source=none" target="_blank" rel="noreferrer">Trade now</a>
+            </div>
+          </article>
+        </section>
+      </section>
+
       <section class="tab-panel" id="wheelTab">
         <section class="wheel-intro">
           <div>
@@ -957,7 +1051,7 @@
       </div>
     </div>
 
-    <script src="script.js?v=72"></script>
+    <script src="script.js?v=73"></script>
     <!-- Cloudflare Web Analytics -->
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"d7d23764b1354852ac3a3bdd535f8315"}'></script>
     <!-- End Cloudflare Web Analytics -->
