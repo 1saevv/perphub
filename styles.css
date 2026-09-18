@@ -8713,7 +8713,7 @@ body {
 
 #competitionTab .competition-layout {
   display: grid;
-  grid-template-columns: repeat(2, minmax(260px, 360px));
+  grid-template-columns: repeat(3, minmax(230px, 1fr));
   gap: 10px;
   align-items: stretch;
   justify-content: center;
@@ -8871,6 +8871,12 @@ body {
   font-size: 0.68rem;
   font-weight: 800;
   line-height: 1.45;
+}
+
+@media (max-width: 980px) {
+  #competitionTab .competition-layout {
+    grid-template-columns: repeat(2, minmax(230px, 1fr));
+  }
 }
 
 #competitionTab .competition-reward-stack {
