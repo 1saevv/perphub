@@ -6,7 +6,10 @@
     <title>PerpHub</title>
     <link rel="icon" type="image/png" sizes="512x512" href="faviconperphub-large.png?v=3" />
     <link rel="apple-touch-icon" href="faviconperphub-large.png?v=3" />
-    <link rel="stylesheet" href="styles.css?v=133" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=164" />
   </head>
   <body class="app-loading">
     <main class="app-shell">
@@ -16,16 +19,14 @@
         </button>
 
         <nav class="tabs" aria-label="Tools">
+          <button class="tab-button" type="button" data-tab="home">
+            <span>Home</span>
+          </button>
           <button class="tab-button" type="button" data-tab="calculator">
             <span>Calculator</span>
           </button>
           <button class="tab-button" type="button" data-tab="vooi">
-            <img class="tab-icon" src="hedderstrategieslogo.png" alt="" />
             <span>Strategies</span>
-          </button>
-          <button class="tab-button wide-label" type="button" data-tab="boost">
-            <img class="tab-icon boost-tab-icon" src="boostshedder.png" alt="" />
-            <span>Boost</span>
           </button>
           <button class="tab-button" type="button" data-tab="competition">
             <span>Competition</span>
@@ -40,7 +41,6 @@
                 <span>Points Stack</span>
               </button>
               <button class="tab-button more-item" type="button" data-tab="wheel">
-                <img class="tab-icon" src="wheellogo.png" alt="" />
                 <span>Wheel</span>
               </button>
             </div>
@@ -68,7 +68,6 @@
               <span>Points Stack</span>
             </button>
             <button class="burger-item" type="button" data-tab="wheel">
-              <img class="tab-icon" src="wheellogo.png" alt="" />
               <span>Wheel</span>
             </button>
             <button class="burger-item" type="button" data-tab="competition">
@@ -86,16 +85,14 @@
       </header>
 
       <nav class="mobile-tabs" aria-label="Mobile tools">
+        <button class="tab-button" type="button" data-tab="home">
+          <span>Home</span>
+        </button>
         <button class="tab-button" type="button" data-tab="calculator">
           <span>Calculator</span>
         </button>
         <button class="tab-button" type="button" data-tab="vooi">
-          <img class="tab-icon" src="hedderstrategieslogo.png" alt="" />
           <span>Strategies</span>
-        </button>
-        <button class="tab-button wide-label" type="button" data-tab="boost">
-          <img class="tab-icon boost-tab-icon" src="boostshedder.png" alt="" />
-          <span>Boost</span>
         </button>
         <button class="tab-button" type="button" data-tab="competition">
           <span>Competition</span>
@@ -103,37 +100,188 @@
       </nav>
 
       <section class="tab-panel active" id="homeTab">
-        <section class="home-card">
-          <div class="home-card-top">
-            <div class="home-logo-stack" aria-hidden="true">
-              <img src="Extendedlogo.jpg" alt="" />
-              <img src="hyperlogo.jpg" alt="" />
-              <img src="vooilogoforPerpHub.jpg" alt="" />
-              <img src="ostiumlogo.jpg" alt="" />
-              <img src="entropylogo.jpg" alt="" />
-              <img src="lighterlogo.jpg" alt="" />
-              <img src="sailogo.jpg" alt="" />
+        <section class="home-terminal">
+          <section class="home-perp-grid" aria-label="PerpHub markets">
+            <div class="home-route-index">
+              <div class="home-program-head">
+                <h1>Trading Programs & Incentives</h1>
+                <span>Referral links, boosts and active reward programs</span>
+              </div>
+              <div class="home-program-rail" aria-label="Trading programs">
+                <a class="home-program-card is-hot" href="https://robinhoodchain.lighter.xyz/?referral=PERP&source=none" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="lighterlogo.jpg" alt="" loading="lazy" />Lighter RH</span><em>Points</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>11,000,000 $LIT</strong>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="vooilogoforPerpHub.jpg" alt="" loading="lazy" />VOOI</span><em>Rebate</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>10% rebates</strong>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card split-reward-card" href="https://app.extended.exchange/join/1SAEVV" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="Extendedlogo.jpg" alt="" loading="lazy" />Extended</span><em>Boost</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>+15% points boost</strong>
+                  <small>10% trading fee discount</small>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card" href="https://entropy.io/?r=slem" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="entropylogo.jpg" alt="" loading="lazy" />Entropy</span><em>Rebate</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>120% rebate</strong>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card" href="https://app.hyperliquid.xyz/join/PERPHUB" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="hyperlogo.jpg" alt="" loading="lazy" />Hyperliquid</span><em>Fees</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>4% discount</strong>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="ostiumlogo.jpg" alt="" loading="lazy" />Ostium</span><em>Boost</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>+12% VOOI Pro</strong>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card" href="https://omni.variational.io/?ref=OMNIALEKZZ" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="variationallogo.jpg" alt="" loading="lazy" />Variational</span><em>Points</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>Points program</strong>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card" href="https://hibachi.xyz/r/1saevv" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="hibachilogo.png" alt="" loading="lazy" />Hibachi</span><em>Points</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>Points program</strong>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card ondo-program-card" href="https://app.ondoperps.xyz/?ref=VR1PQ4" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="ondo.png" alt="" loading="lazy" />OndoPerps</span><em>Weekly</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>175,000 USDC</strong>
+                  <small>+5% trading fee discount</small>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+                <a class="home-program-card split-reward-card" href="https://sai.fun/perps?ref=PERPHUB" target="_blank" rel="noreferrer">
+                  <span class="home-program-top"><span><img src="sailogo.jpg" alt="" loading="lazy" />SAI</span><em>Points</em></span>
+                  <span class="home-program-label">Reward</span>
+                  <strong>20% discount</strong>
+                  <small>points program</small>
+                  <span class="home-program-foot" aria-hidden="true"></span>
+                </a>
+              </div>
+              <div class="home-program-scroll-hint" aria-hidden="true"><span></span></div>
             </div>
-            <img class="home-brand-logo" src="perphubbbbb.png" alt="PerpHub" />
-          </div>
-          <p class="kicker">PerpHub</p>
-          <h1>Made for fun. Maybe someone finds it useful.</h1>
-          <div class="home-signal-row" aria-label="PerpHub sections">
-            <span>Points calculator</span>
-            <span>Points stack</span>
-            <span>Trading strategies</span>
-            <span>Referral boosts</span>
-            <span>Competition</span>
-            <span>Perp wheel</span>
-          </div>
-          <div class="home-actions">
-            <button class="home-action primary" type="button" data-home-target="calculator">Lighter calculator</button>
-            <button class="home-action" type="button" data-home-target="stack">Points Stack</button>
-            <button class="home-action" type="button" data-home-target="vooi">Strategies</button>
-            <button class="home-action" type="button" data-home-target="boost">Boosts</button>
-            <button class="home-action" type="button" data-home-target="competition">Competition</button>
-            <button class="home-action" type="button" data-home-target="wheel">Wheel</button>
-          </div>
+
+            <aside class="home-side-console">
+              <div class="home-console-metrics">
+                <span><b>10</b>perks</span>
+                <span><b>9</b>dex</span>
+                <span><b>1</b>aggregator</span>
+                <span><b>6</b>fee deals</span>
+              </div>
+              <div class="home-console-chart" aria-hidden="true">
+                <video class="home-fun-video" autoplay loop muted playsinline preload="metadata">
+                  <source src="home-loop.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </aside>
+          </section>
+
+          <section class="home-route-matrix" aria-label="PerpHub DEX directory">
+            <div class="home-matrix-toolbar">
+              <div class="home-filter-tabs" aria-label="Reward filters">
+                <button class="active" type="button" data-dex-filter="all">All</button>
+                <button type="button" data-dex-filter="points">Points</button>
+                <button type="button" data-dex-filter="fees">Fees</button>
+              </div>
+              <label class="home-search">
+                <span>Search exchange</span>
+                <input type="search" placeholder="Search DEX" data-dex-search />
+              </label>
+            </div>
+            <div class="home-exchange-table" aria-label="Exchange reward table">
+              <div class="home-exchange-row home-exchange-head">
+                <span>DEX</span>
+                <span>Reward / Boost</span>
+                <span>Via</span>
+                <span>Type</span>
+                <span>Link</span>
+              </div>
+              <article class="home-exchange-row" data-dex-row data-dex-category="points" data-dex-search-value="lighter robinhood rh lit points">
+                <span class="home-exchange"><img src="lighterlogo.jpg" alt="" loading="lazy" />Lighter RH</span>
+                <span>11M $LIT</span>
+                <span>Direct</span>
+                <strong>Points</strong>
+                <a href="https://robinhoodchain.lighter.xyz/?referral=PERP&source=none" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="fees" data-dex-search-value="vooi rebate aggregator fees">
+                <span class="home-exchange"><img src="vooilogoforPerpHub.jpg" alt="" loading="lazy" />VOOI</span>
+                <span>10% rebates</span>
+                <span>VOOI</span>
+                <strong>Rebate</strong>
+                <a href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="points fees" data-dex-search-value="extended points boost fees discount vooi">
+                <span class="home-exchange"><img src="Extendedlogo.jpg" alt="" loading="lazy" />Extended</span>
+                <span>+15% points boost / 10% fee discount</span>
+                <span>Direct or VOOI</span>
+                <strong>Boost + fees</strong>
+                <a href="https://app.extended.exchange/join/1SAEVV" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="fees" data-dex-search-value="hyperliquid hype fees discount">
+                <span class="home-exchange"><img src="hyperlogo.jpg" alt="" loading="lazy" />Hyperliquid</span>
+                <span>4% discount</span>
+                <span>Direct</span>
+                <strong>Fee discount</strong>
+                <a href="https://app.hyperliquid.xyz/join/PERPHUB" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="points" data-dex-search-value="ostium vooi pro points boost">
+                <span class="home-exchange"><img src="ostiumlogo.jpg" alt="" loading="lazy" />Ostium</span>
+                <span>+12% VOOI Pro</span>
+                <span>VOOI</span>
+                <strong>Points boost</strong>
+                <a href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="fees" data-dex-search-value="entropy rebate fees">
+                <span class="home-exchange"><img src="entropylogo.jpg" alt="" loading="lazy" />Entropy</span>
+                <span>120% rebate</span>
+                <span>Direct</span>
+                <strong>Rebate</strong>
+                <a href="https://entropy.io/?r=slem" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="points" data-dex-search-value="variational omni points program access">
+                <span class="home-exchange"><img src="variationallogo.jpg" alt="" loading="lazy" />Variational</span>
+                <span>Points program</span>
+                <span>Direct</span>
+                <strong>Points program</strong>
+                <a href="https://omni.variational.io/?ref=OMNIALEKZZ" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="points" data-dex-search-value="hibachi points referral">
+                <span class="home-exchange"><img src="hibachilogo.png" alt="" loading="lazy" />Hibachi</span>
+                <span>Points program</span>
+                <span>Direct</span>
+                <strong>Points program</strong>
+                <a href="https://hibachi.xyz/r/1saevv" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="points fees" data-dex-search-value="ondo ondoperps weekly usdc fees discount">
+                <span class="home-exchange"><img src="ondo.png" alt="" loading="lazy" />OndoPerps</span>
+                <span>175,000 USDC / 5% fee discount</span>
+                <span>Direct</span>
+                <strong>Weekly + fees</strong>
+                <a href="https://app.ondoperps.xyz/?ref=VR1PQ4" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+              <article class="home-exchange-row" data-dex-row data-dex-category="points fees" data-dex-search-value="sai points fee discount">
+                <span class="home-exchange"><img src="sailogo.jpg" alt="" loading="lazy" />SAI</span>
+                <span>20% discount / points program</span>
+                <span>Direct</span>
+                <strong>Points + fees</strong>
+                <a href="https://sai.fun/perps?ref=PERPHUB" target="_blank" rel="noreferrer">Trade</a>
+              </article>
+            </div>
+          </section>
         </section>
       </section>
 
@@ -198,10 +346,10 @@
                 <input id="userPoints" type="number" min="0" step="0.01" inputmode="decimal" value="16.8" />
               </label>
 
-              <label class="custom-otc-toggle" title="Unlock custom OTC price">
-                <input id="customOtcPrice" type="checkbox" />
+              <div class="custom-otc-toggle" title="Unlock custom OTC price">
+                <input id="customOtcPrice" type="checkbox" aria-label="Use custom OTC price" />
                 <span>Use custom OTC price (Updated 09.09.2026)</span>
-              </label>
+              </div>
 
               <label class="field money-field price-field slider-field">
                 <div class="slider-head">
@@ -213,10 +361,10 @@
                 <input id="litPriceRange" type="range" min="0.5" max="20" step="0.1" value="4.7" />
               </label>
 
-              <label class="pnl-toggle-label">
-                <input id="includePnl" type="checkbox" />
+              <div class="pnl-toggle-label">
+                <input id="includePnl" type="checkbox" aria-label="Include Trading PnL" />
                 <span>Include Trading PnL</span>
-              </label>
+              </div>
 
               <label class="field money-field pnl-field">
                 <span>Trading PnL</span>
@@ -288,13 +436,13 @@
               </article>
 
               <article class="result-card compact">
-                <span id="valuePerPointLabel">Estimated Value per Point</span>
+                <span id="valuePerPointLabel">Value per Point</span>
                 <strong id="valuePerPointLit">44 LIT / point</strong>
                 <em id="valuePerPointUsd">$206.80 / point</em>
               </article>
 
               <article class="result-card compact">
-                <span id="userShareLabel">Your Share of Total Points</span>
+                <span id="userShareLabel">Share of Total Points</span>
                 <strong id="userShare">0.006720%</strong>
               </article>
 
@@ -344,6 +492,10 @@
                   <option value="token">Reward Pool</option>
                   <option value="otc">OTC Price</option>
                 </select>
+                <div class="stack-mode-toggle" aria-hidden="true">
+                  <button class="active" type="button" data-stack-mode-option="token">Reward Pool</button>
+                  <button type="button" data-stack-mode-option="otc">OTC Price</button>
+                </div>
               </div>
 
               <div class="stack-fields">
@@ -388,6 +540,10 @@
                   <option value="otc">OTC Price</option>
                   <option value="token">Reward Pool</option>
                 </select>
+                <div class="stack-mode-toggle" aria-hidden="true">
+                  <button type="button" data-stack-mode-option="token">Reward Pool</button>
+                  <button class="active" type="button" data-stack-mode-option="otc">OTC Price</button>
+                </div>
               </div>
 
               <div class="stack-fields">
@@ -911,6 +1067,19 @@
           </aside>
         </section>
       </section>
+
+      <footer class="site-footer">
+        <div class="footer-brand">
+          <img src="perphubbbbb.png" alt="PerpHub" loading="lazy" />
+          <span>Perp dashboards, calculators and farming tools.</span>
+        </div>
+        <div class="footer-links">
+          <button type="button" data-home-target="calculator">Calculator</button>
+          <button type="button" data-home-target="stack">Points Stack</button>
+          <a href="https://t.me/+OHD6KCX_i-BiNGJk" target="_blank" rel="noreferrer">Telegram</a>
+          <button type="button" aria-disabled="true">Twitter</button>
+        </div>
+      </footer>
     </main>
 
     <div class="share-modal hidden" id="shareModal" aria-hidden="true">
@@ -1051,7 +1220,7 @@
       </div>
     </div>
 
-    <script src="script.js?v=73"></script>
+    <script src="script.js?v=75"></script>
     <!-- Cloudflare Web Analytics -->
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"d7d23764b1354852ac3a3bdd535f8315"}'></script>
     <!-- End Cloudflare Web Analytics -->

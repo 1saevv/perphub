@@ -689,6 +689,15 @@ function updateStackNumberHints() {
   });
 }
 
+function syncStackModeToggles() {
+  elements.stackDexCards.forEach((card) => {
+    const mode = card.querySelector(".stack-mode")?.value ?? "token";
+    card.querySelectorAll("[data-stack-mode-option]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.stackModeOption === mode);
+    });
+  });
+}
+
 function getStackVerdict(results, netValue) {
   const activeResults = results.filter((result) => result.gross > 0 || result.pnl !== 0);
   if (!activeResults.length) return "Add points to build your stack.";
@@ -701,6 +710,7 @@ function getStackVerdict(results, netValue) {
 function calculateStack() {
   if (!elements.stackDexCards.length) return null;
 
+  syncStackModeToggles();
   updateStackNumberHints();
   const results = [...elements.stackDexCards].map(getStackCardResult);
   const gross = results.reduce((sum, result) => sum + result.gross, 0);
@@ -1334,11 +1344,13 @@ function syncAllRanges() {
 
 function bindSyncedControl(input, range) {
   input.addEventListener("input", () => {
+    if (input.disabled) return;
     syncRangeFromInput(input, range);
     calculate();
   });
 
   range.addEventListener("input", () => {
+    if (range.disabled || input.disabled) return;
     syncInputFromRange(input, range);
     calculate();
   });
@@ -1597,7 +1609,10 @@ function updateSimpleDexInputs() {
   const dexDefaults = simpleDexDefaults[selectedDex] ?? { otcPrice: DEFAULT_OTC_PRICE_PER_POINT };
 
   elements.litPrice.disabled = !isCustomPrice;
+  elements.litPriceRange.disabled = !isCustomPrice;
+  elements.litPrice.closest(".price-field").classList.toggle("is-disabled", !isCustomPrice);
   if (!isCustomPrice) elements.litPrice.value = dexDefaults.otcPrice;
+  syncRangeFromInput(elements.litPrice, elements.litPriceRange);
   elements.litPriceOutput.textContent = currencyFormatter.format(numericValue(elements.litPrice));
 }
 
@@ -1652,6 +1667,8 @@ function updateCalculatorTradeButton() {
   if (selectedDex !== "Lighter") activeEstimateMode = "season";
   if (selectedDex === "Lighter") {
     elements.litPrice.disabled = false;
+    elements.litPriceRange.disabled = false;
+    elements.litPrice.closest(".price-field").classList.remove("is-disabled");
     if (numericValue(elements.litPrice) === DEFAULT_OTC_PRICE_PER_POINT) elements.litPrice.value = defaults.litPrice;
   } else {
     const dexDefaults = simpleDexDefaults[selectedDex];
@@ -1819,6 +1836,18 @@ elements.stackInputs.forEach((input) => {
   input.addEventListener("change", calculateStack);
 });
 
+elements.stackDexCards.forEach((card) => {
+  card.querySelectorAll("[data-stack-mode-option]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const select = card.querySelector(".stack-mode");
+      if (!select) return;
+
+      select.value = button.dataset.stackModeOption;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+  });
+});
+
 elements.stackShareButton?.addEventListener("click", openStackShareCard);
 elements.stackShareCloseButton?.addEventListener("click", closeStackShareCard);
 elements.stackSaveCardButton?.addEventListener("click", saveStackShareImage);
@@ -1854,6 +1883,86 @@ elements.walletCopyButtons.forEach((button) => {
   button.addEventListener("click", () => copyWallet(button.dataset.walletCopy, button));
 });
 
+const programRail = document.querySelector(".home-program-rail");
+const programScrollHint = document.querySelector(".home-program-scroll-hint");
+const programScrollThumb = document.querySelector(".home-program-scroll-hint span");
+
+function updateProgramScrollHint() {
+  if (!programRail || !programScrollHint || !programScrollThumb) return;
+  const maxScroll = programRail.scrollWidth - programRail.clientWidth;
+  const isScrollable = maxScroll > 1;
+  const thumbWidth = isScrollable ? Math.max(18, (programRail.clientWidth / programRail.scrollWidth) * 100) : 100;
+  const thumbTravel = 100 - thumbWidth;
+  const thumbLeft = isScrollable ? (programRail.scrollLeft / maxScroll) * thumbTravel : 0;
+
+  programScrollHint.classList.toggle("is-scrollable", isScrollable);
+  programScrollThumb.style.width = `${thumbWidth}%`;
+  programScrollThumb.style.left = `${thumbLeft}%`;
+}
+
+if (programRail && programScrollHint && programScrollThumb) {
+  let programDragStartX = 0;
+  let programDragStartScrollLeft = 0;
+
+  programRail.addEventListener("scroll", updateProgramScrollHint, { passive: true });
+  window.addEventListener("resize", updateProgramScrollHint);
+
+  programScrollHint.addEventListener("pointerdown", (event) => {
+    const maxScroll = programRail.scrollWidth - programRail.clientWidth;
+    if (maxScroll <= 1 || event.button !== 0 || event.target !== programScrollThumb) return;
+
+    event.preventDefault();
+    programDragStartX = event.clientX;
+    programDragStartScrollLeft = programRail.scrollLeft;
+    programScrollHint.setPointerCapture(event.pointerId);
+
+    const syncFromPointer = (pointerEvent) => {
+      const trackWidth = programScrollHint.clientWidth;
+      const thumbWidth = programScrollThumb.offsetWidth;
+      const travelWidth = Math.max(1, trackWidth - thumbWidth);
+      const scrollRatio = maxScroll / travelWidth;
+      programRail.scrollLeft = programDragStartScrollLeft + (pointerEvent.clientX - programDragStartX) * scrollRatio;
+    };
+
+    const stopDragging = () => {
+      programScrollHint.removeEventListener("pointermove", syncFromPointer);
+      programScrollHint.removeEventListener("pointerup", stopDragging);
+      programScrollHint.removeEventListener("pointercancel", stopDragging);
+    };
+
+    programScrollHint.addEventListener("pointermove", syncFromPointer);
+    programScrollHint.addEventListener("pointerup", stopDragging);
+    programScrollHint.addEventListener("pointercancel", stopDragging);
+  });
+}
+
+const dexDirectoryButtons = document.querySelectorAll("[data-dex-filter]");
+const dexDirectorySearch = document.querySelector("[data-dex-search]");
+const dexDirectoryRows = document.querySelectorAll("[data-dex-row]");
+let activeDexDirectoryFilter = "all";
+
+function updateDexDirectory() {
+  const query = (dexDirectorySearch?.value || "").trim().toLowerCase();
+
+  dexDirectoryRows.forEach((row) => {
+    const categories = row.dataset.dexCategory || "";
+    const searchValue = row.dataset.dexSearchValue || row.textContent.toLowerCase();
+    const matchesFilter = activeDexDirectoryFilter === "all" || categories.includes(activeDexDirectoryFilter);
+    const matchesSearch = !query || searchValue.includes(query);
+    row.hidden = !matchesFilter || !matchesSearch;
+  });
+}
+
+dexDirectoryButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activeDexDirectoryFilter = button.dataset.dexFilter || "all";
+    dexDirectoryButtons.forEach((item) => item.classList.toggle("active", item === button));
+    updateDexDirectory();
+  });
+});
+
+dexDirectorySearch?.addEventListener("input", updateDexDirectory);
+
 normalizeLegacyCalculatorHash();
 applyStoredDex();
 setTab(tabFromHash() ?? getStoredTab(), { updateHash: !tabFromHash() });
@@ -1869,4 +1978,5 @@ applyShareCardBackground();
 renderStackBgPicker();
 applyStackCardBackground();
 calculateStack();
+updateProgramScrollHint();
 document.body.classList.remove("app-loading");
