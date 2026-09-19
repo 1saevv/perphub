@@ -5025,10 +5025,16 @@ body {
   align-items: center;
   min-height: 54px;
   border-bottom: 1px solid #202020;
+  transition: background-color 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
 
 .home-exchange-row:last-child {
   border-bottom: 0;
+}
+
+.home-exchange-row:not(.home-exchange-head):hover {
+  background: #10120d;
+  box-shadow: inset 3px 0 0 rgba(204, 255, 0, 0.58), inset 0 0 0 1px rgba(255, 255, 255, 0.035);
 }
 
 .home-exchange-row > * {
@@ -5066,6 +5072,11 @@ body {
   height: 18px;
   border-radius: 2px;
   object-fit: cover;
+  transition: filter 140ms ease;
+}
+
+.home-exchange-row:not(.home-exchange-head):hover .home-exchange img {
+  filter: brightness(1.12);
 }
 
 .home-exchange b {
@@ -5111,6 +5122,13 @@ body {
   background: #101010;
   font-size: 0.68rem;
   font-weight: 900;
+  transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+}
+
+.home-exchange-row:not(.home-exchange-head):hover a {
+  border-color: rgba(204, 255, 0, 0.38);
+  color: #dfff59;
+  background: #13170d;
 }
 
 .home-exchange-row a::after {
