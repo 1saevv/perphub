@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=166" />
+    <link rel="stylesheet" href="styles.css?v=169" />
   </head>
   <body class="app-loading">
     <main class="app-shell">
@@ -44,8 +44,29 @@
           </div>
         </nav>
 
+        <div class="language-menu">
+          <button class="language-button" type="button" id="languageButton" aria-label="Current language: English" aria-expanded="false" aria-controls="languageMenu">EN</button>
+          <div class="language-dropdown" id="languageMenu">
+            <button class="language-option active" type="button" data-language="en" data-language-label="EN">
+              <span>English</span>
+              <b>EN</b>
+            </button>
+            <button class="language-option" type="button" data-language="zh" data-language-label="中">
+              <span>中文</span>
+              <b>中</b>
+            </button>
+            <button class="language-option" type="button" data-language="ja" data-language-label="日">
+              <span>日本語</span>
+              <b>日</b>
+            </button>
+            <button class="language-option" type="button" data-language="ko" data-language-label="한">
+              <span>한국어</span>
+              <b>한</b>
+            </button>
+          </div>
+        </div>
+
         <div class="topbar-actions">
-          <button class="coffee-link" id="coffeeButton" type="button">Buy me a coffee</button>
           <a class="telegram-link" href="https://t.me/+OHD6KCX_i-BiNGJk" target="_blank" rel="noreferrer" aria-label="Telegram">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M21.8 4.2 18.5 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.3L5.9 13.4 1 11.9c-1.1-.3-1.1-1.1.2-1.6L20.3 3c.9-.3 1.7.2 1.5 1.2z" />
@@ -67,7 +88,6 @@
             <button class="burger-item" type="button" data-tab="competition">
               <span>Competition</span>
             </button>
-            <button class="burger-item burger-coffee-item" id="mobileCoffeeButton" type="button">Buy me a coffee</button>
             <a class="burger-item" href="https://t.me/+OHD6KCX_i-BiNGJk" target="_blank" rel="noreferrer">
               <svg class="burger-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M21.8 4.2 18.5 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.3L5.9 13.4 1 11.9c-1.1-.3-1.1-1.1.2-1.6L20.3 3c.9-.3 1.7.2 1.5 1.2z" />
@@ -827,7 +847,7 @@
               <div class="competition-logos" aria-hidden="true">
                 <img src="sailogo.jpg" alt="" loading="lazy" />
               </div>
-              <span class="competition-date">Aug 24 - Sep 21</span>
+              <span class="competition-date">Aug 24 - Oct 4</span>
               <button class="competition-info" type="button" aria-label="Competition details">
                 <span aria-hidden="true">i</span>
                 <span class="competition-tooltip" role="tooltip">
@@ -1056,38 +1076,7 @@
       </div>
     </div>
 
-    <div class="coffee-modal hidden" id="coffeeModal" aria-hidden="true">
-      <div class="coffee-dialog" role="dialog" aria-modal="true" aria-labelledby="coffeeTitle">
-        <div class="share-dialog-head">
-          <h2 id="coffeeTitle">Buy me a coffee</h2>
-          <button class="icon-button" id="coffeeCloseButton" type="button" aria-label="Close">&times;</button>
-        </div>
-
-        <div class="coffee-body">
-          <p>If PerpHub saved you time, you can send a small thanks here. Every bit helps keep it independent.</p>
-
-          <div class="wallet-list">
-            <article class="wallet-row">
-              <div>
-                <span>EVM address (ETH, Base, Arbitrum, Optimism, Polygon, BNB)</span>
-                <strong id="evmWalletLabel">0xde2a8b100ffB2f957d008DC28661A9E20A7AF7f4</strong>
-              </div>
-              <button class="wallet-copy-button" type="button" data-wallet-copy="evm">Copy</button>
-            </article>
-
-            <article class="wallet-row">
-              <div>
-                <span>Solana address</span>
-                <strong id="solanaWalletLabel">GZVssHZt4YCnicAMT5HGB5btZBZt6dLghdGn8rADDGzX</strong>
-              </div>
-              <button class="wallet-copy-button" type="button" data-wallet-copy="solana">Copy</button>
-            </article>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="script.js?v=78"></script>
+    <script src="script.js?v=89"></script>
     <!-- Cloudflare Web Analytics -->
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"d7d23764b1354852ac3a3bdd535f8315"}'></script>
     <!-- End Cloudflare Web Analytics -->

@@ -781,6 +781,93 @@ a {
   margin-left: auto;
 }
 
+.language-menu {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.language-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 30px;
+  flex: 0 0 auto;
+  border: 1px solid #2a2a2a;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.72);
+  background: #0b0b0b;
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1;
+  transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+
+.language-menu.open .language-button,
+.language-button:hover,
+.language-button:focus-visible {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.26);
+  background: #151515;
+}
+
+.language-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 92;
+  display: none;
+  min-width: 164px;
+  border: 1px solid #242424;
+  background: #080808;
+}
+
+.language-menu.open .language-dropdown {
+  display: grid;
+}
+
+.language-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  min-height: 42px;
+  border: 0;
+  border-bottom: 1px solid #202020;
+  padding: 0 14px;
+  color: rgba(255, 255, 255, 0.68);
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.language-option b {
+  color: rgba(255, 255, 255, 0.42);
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.language-option:last-child {
+  border-bottom: 0;
+}
+
+.language-option:hover,
+.language-option.active {
+  color: var(--text);
+  background: #151515;
+}
+
+.language-option:hover b,
+.language-option.active b {
+  color: rgba(255, 255, 255, 0.76);
+}
+
 .burger-menu {
   position: relative;
   display: none;
@@ -850,11 +937,6 @@ a {
   background: rgba(204, 255, 0, 0.09);
 }
 
-.burger-coffee-item {
-  color: var(--accent);
-}
-
-.coffee-link,
 .telegram-link {
   display: inline-flex;
   align-items: center;
@@ -864,21 +946,6 @@ a {
   font-weight: 800;
   white-space: nowrap;
   transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
-}
-
-.coffee-link {
-  padding: 0 12px;
-}
-
-.coffee-link {
-  border: 0;
-  color: var(--accent);
-  background: transparent;
-}
-
-.coffee-link:hover {
-  color: var(--accent);
-  opacity: 0.82;
 }
 
 .telegram-link {
@@ -2669,8 +2736,7 @@ input[type="range"]::-webkit-slider-thumb {
   display: none;
 }
 
-.share-modal,
-.coffee-modal {
+.share-modal {
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -2681,22 +2747,16 @@ input[type="range"]::-webkit-slider-thumb {
   backdrop-filter: blur(12px);
 }
 
-.share-modal.hidden,
-.coffee-modal.hidden {
+.share-modal.hidden {
   display: none;
 }
 
-.share-dialog,
-.coffee-dialog {
+.share-dialog {
   width: min(760px, 100%);
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 8px;
   background: #15161a;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
-}
-
-.coffee-dialog {
-  width: min(560px, 100%);
 }
 
 .share-dialog-head {
@@ -2994,66 +3054,6 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--accent);
 }
 
-.coffee-body {
-  display: grid;
-  gap: 14px;
-  padding: 16px;
-}
-
-.coffee-body p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.78rem;
-  line-height: 1.5;
-}
-
-.wallet-list {
-  display: grid;
-  gap: 10px;
-}
-
-.wallet-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.075);
-  border-radius: 8px;
-  background: rgba(7, 9, 10, 0.72);
-}
-
-.wallet-row span {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.wallet-row strong {
-  display: block;
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 0.78rem;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-.wallet-copy-button {
-  min-height: 36px;
-  min-width: 72px;
-  border: 1px solid rgba(204, 255, 0, 0.28);
-  border-radius: 8px;
-  color: var(--text);
-  background: rgba(204, 255, 0, 0.08);
-  font-weight: 800;
-}
-
-.wallet-copy-button:hover {
-  background: rgba(204, 255, 0, 0.14);
-}
-
 @media (max-width: 980px) {
   .app-shell {
     width: calc(100vw - 24px);
@@ -3129,8 +3129,13 @@ input[type="range"]::-webkit-slider-thumb {
     display: none;
   }
 
+  .language-menu {
+    margin-left: auto;
+  }
+
   .burger-menu {
     display: block;
+    margin-left: 0;
   }
 
   .mobile-tabs {
@@ -3216,10 +3221,6 @@ input[type="range"]::-webkit-slider-thumb {
   .brand-logo {
     width: 112px;
     height: 46px;
-  }
-
-  .coffee-link {
-    min-height: 0;
   }
 
   .hero-row {
@@ -3382,8 +3383,7 @@ input[type="range"]::-webkit-slider-thumb {
     min-height: 140px;
   }
 
-  .share-modal,
-  .coffee-modal {
+  .share-modal {
     padding: 10px;
   }
 
@@ -3408,10 +3408,6 @@ input[type="range"]::-webkit-slider-thumb {
     max-width: none;
     margin: 10px;
     aspect-ratio: 728 / 420;
-  }
-
-  .wallet-row {
-    grid-template-columns: 1fr;
   }
 
   .share-card-content {
@@ -3636,18 +3632,15 @@ body::before {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
-.coffee-link,
 .telegram-link,
 .share-button,
 .trade-button,
 .competition-button,
 .home-action,
-.share-action-button,
-.wallet-copy-button {
+.share-action-button {
   border-radius: 7px;
 }
 
-.coffee-link,
 .telegram-link {
   min-height: 38px;
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -3655,14 +3648,7 @@ body::before {
   background: rgba(255, 255, 255, 0.035);
 }
 
-.coffee-link {
-  color: #0b0d0b;
-  border-color: rgba(204, 255, 0, 0.72);
-  background: var(--accent);
-}
-
-.telegram-link:hover,
-.coffee-link:hover {
+.telegram-link:hover {
   color: var(--text);
   border-color: rgba(204, 255, 0, 0.34);
   background: rgba(204, 255, 0, 0.1);
@@ -3783,8 +3769,7 @@ h2,
 .pool-card,
 .result-card,
 .competition-card,
-.share-dialog,
-.coffee-dialog {
+.share-dialog {
   border-color: rgba(255, 255, 255, 0.11);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 84px),
@@ -3832,8 +3817,7 @@ h2,
 
 .field,
 .result-card,
-.stack-dex-card,
-.wallet-row {
+.stack-dex-card {
   border-color: rgba(255, 255, 255, 0.09);
   background:
     linear-gradient(90deg, rgba(204, 255, 0, 0.12), transparent 3px),
@@ -4143,10 +4127,6 @@ body::before {
   color: var(--text);
   border-color: transparent;
   background: transparent;
-}
-
-.coffee-link {
-  box-shadow: none;
 }
 
 .home-market {
@@ -4557,19 +4537,12 @@ body {
   border-radius: 3px;
 }
 
-.coffee-link,
 .telegram-link {
   min-height: 36px;
   border: 1px solid #2a2a2a;
   border-radius: 0;
   background: #0a0a0a;
   color: #dcdcdc;
-}
-
-.coffee-link {
-  color: #050505;
-  border-color: var(--accent);
-  background: var(--accent);
 }
 
 .home-terminal {
@@ -7838,117 +7811,6 @@ body {
   color: var(--accent);
 }
 
-/* Coffee modal: same flat terminal treatment as the active nav surfaces. */
-.coffee-modal {
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: none;
-}
-
-.coffee-dialog {
-  width: min(520px, 100%);
-  overflow: hidden;
-  border: 1px solid #242424;
-  border-radius: 0;
-  background: #080808;
-  box-shadow: none;
-}
-
-.coffee-dialog .share-dialog-head {
-  min-height: 50px;
-  border-bottom: 1px solid #202020;
-  padding: 0 14px;
-  background: #0d0d0d;
-}
-
-.coffee-dialog .share-dialog-head h2 {
-  color: #eee;
-  font-size: 0.76rem;
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.coffee-dialog .icon-button {
-  width: 30px;
-  height: 30px;
-  border: 1px solid #242424;
-  border-radius: 0;
-  color: #8d8d8d;
-  background: #080808;
-  font-size: 1.2rem;
-}
-
-.coffee-dialog .icon-button:hover {
-  color: var(--accent);
-  border-color: rgba(204, 255, 0, 0.42);
-  background: #10140a;
-}
-
-.coffee-body {
-  gap: 0;
-  padding: 0;
-}
-
-.coffee-body p {
-  margin: 0;
-  border-bottom: 1px solid #202020;
-  padding: 14px;
-  color: #898989;
-  font-size: 0.7rem;
-  font-weight: 800;
-  line-height: 1.45;
-}
-
-.wallet-list {
-  gap: 0;
-}
-
-.wallet-row {
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  border: 0;
-  border-bottom: 1px solid #202020;
-  border-radius: 0;
-  padding: 13px 14px;
-  background: transparent;
-}
-
-.wallet-row:last-child {
-  border-bottom: 0;
-}
-
-.wallet-row span {
-  margin-bottom: 7px;
-  color: #777;
-  font-size: 0.56rem;
-  letter-spacing: 0.1em;
-}
-
-.wallet-row strong {
-  color: #e2e2e2;
-  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
-  font-size: 0.7rem;
-  font-weight: 850;
-}
-
-.wallet-copy-button {
-  min-height: 32px;
-  min-width: 66px;
-  border: 1px solid rgba(204, 255, 0, 0.5);
-  border-radius: 0;
-  color: #080a07;
-  background: var(--accent);
-  font-size: 0.62rem;
-  font-weight: 950;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.wallet-copy-button:hover {
-  color: var(--accent);
-  background: #10140a;
-}
-
 /* Points Stack: flat terminal skin, aligned with Home / Competition. */
 #stackTab {
   color: #eeeeee;
@@ -8962,18 +8824,6 @@ body {
     min-width: 0;
     padding: 0 5px;
     font-size: 0.58rem;
-  }
-
-  .coffee-dialog {
-    width: calc(100vw - 20px);
-  }
-
-  .wallet-row {
-    grid-template-columns: 1fr;
-  }
-
-  .wallet-copy-button {
-    justify-self: start;
   }
 
   #shareModal .share-metrics {
