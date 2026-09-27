@@ -7,6 +7,7 @@ const simpleDexDefaults = {
   Variational: { points: 500, otcPrice: 19 },
   RiseX: { points: 200, otcPrice: 3 },
   Hibachi: { points: 600, otcPrice: 0.1 },
+  Ondo: { points: 1000, otcPrice: 0.1 },
 };
 const calculatorDexBrands = {
   Lighter: { label: "Lighter x Robinhood", logo: "logoRL.png" },
@@ -15,6 +16,7 @@ const calculatorDexBrands = {
   Variational: { label: "Variational", logo: "variationallogo.jpg" },
   RiseX: { label: "RiseX", logo: "risexlogo.png" },
   Hibachi: { label: "Hibachi", logo: "hibachilogo.png" },
+  Ondo: { label: "Ondo", logo: "ondo.png" },
 };
 const ACTIVE_TAB_STORAGE_KEY = "perphub.activeTab";
 const ACTIVE_DEX_STORAGE_KEY = "perphub.calculatorDex";
@@ -585,6 +587,7 @@ const calculatorDexLinks = {
   Ostium: "https://ultra.vooi.io/i/S9UDFLJC",
   Variational: "https://www.variational.io/en",
   Hibachi: "https://hibachi.xyz/r/1saevv",
+  Ondo: "https://app.ondoperps.xyz/?ref=VR1PQ4",
 };
 
 const elements = {
