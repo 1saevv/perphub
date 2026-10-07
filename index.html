@@ -770,16 +770,22 @@
             <h1>Perp Competitions & Campaigns</h1>
             <p>Live and upcoming competitions, rewards, and campaigns from perp DEXs.</p>
           </div>
+          <div class="competition-status-filter" aria-label="Competition status filter">
+            <span class="competition-status-label">Status</span>
+            <button class="active" type="button" data-competition-filter="ongoing">Ongoing</button>
+            <button type="button" data-competition-filter="closed">Closed</button>
+          </div>
         </section>
 
         <section class="competition-layout">
-          <article class="competition-card panel">
+          <article class="competition-card panel is-closed" data-competition-status="closed">
+            <img class="competition-closed-ribbon" src="closed.png" alt="" loading="lazy" aria-hidden="true" />
             <div class="competition-card-top">
               <div class="competition-logos" aria-hidden="true">
                 <img src="ondo.png" alt="" loading="lazy" />
                 <img src="vooilogoforPerpHub.jpg" alt="" loading="lazy" />
               </div>
-              <span class="competition-date">Sep 16-30</span>
+              <span class="competition-date">Sep 16 - Oct 7</span>
               <button class="competition-info" type="button" aria-label="Competition details">
                 <span aria-hidden="true">i</span>
                 <span class="competition-tooltip" role="tooltip">
@@ -807,11 +813,11 @@
               <span>+ 175,000 USDC weekly by Ondo</span>
             </div>
             <div class="competition-actions">
-              <a class="competition-button" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">Earn rewards</a>
+              <a class="competition-button" href="https://ultra.vooi.io/i/S9UDFLJC" target="_blank" rel="noreferrer">Trade now</a>
             </div>
           </article>
 
-          <article class="competition-card panel">
+          <article class="competition-card panel" data-competition-status="ongoing">
             <div class="competition-card-top">
               <div class="competition-logos" aria-hidden="true">
                 <img src="robinhood.png" alt="" loading="lazy" />
@@ -844,7 +850,8 @@
             </div>
           </article>
 
-          <article class="competition-card panel">
+          <article class="competition-card panel is-closed" data-competition-status="closed">
+            <img class="competition-closed-ribbon" src="closed.png" alt="" loading="lazy" aria-hidden="true" />
             <div class="competition-card-top">
               <div class="competition-logos" aria-hidden="true">
                 <img src="sailogo.jpg" alt="" loading="lazy" />
@@ -882,11 +889,11 @@
               <span>20% trading fee rebates</span>
             </div>
             <div class="competition-actions">
-              <a class="competition-button" href="https://sai.fun/perps?ref=PERPHUB" target="_blank" rel="noreferrer">Join SAI</a>
+              <a class="competition-button" href="https://sai.fun/perps?ref=PERPHUB" target="_blank" rel="noreferrer">Trade now</a>
             </div>
           </article>
 
-          <article class="competition-card panel">
+          <article class="competition-card panel" data-competition-status="ongoing">
             <div class="competition-card-top">
               <div class="competition-logos" aria-hidden="true">
                 <img src="ondo.png" alt="" loading="lazy" />
@@ -919,7 +926,44 @@
             </div>
           </article>
 
-          <article class="competition-card panel">
+          <article class="competition-card panel" data-competition-status="ongoing">
+            <div class="competition-card-top">
+              <div class="competition-logos" aria-hidden="true">
+                <img src="Extendedlogo.jpg" alt="" loading="lazy" />
+              </div>
+              <span class="competition-date">Oct 6 - Nov 3</span>
+              <button class="competition-info" type="button" aria-label="Competition details">
+                <span aria-hidden="true">i</span>
+                <span class="competition-tooltip" role="tooltip">
+                  <span class="competition-tooltip-section">
+                    <b>The Final Arc Competition</b>
+                    <em>Trade RWA markets to participate in the competition.</em>
+                  </span>
+                  <span class="competition-tooltip-section">
+                    <b>Scoring</b>
+                    <em>Your score combines PnL, Weighted Volume and Open Interest using the formula PnL × ⁴√(Weighted Volume × OI).</em>
+                  </span>
+                  <span class="competition-tooltip-section">
+                    <b>Leaderboard</b>
+                    <em>The top 500 traders share the 250,000 USDC prize pool. Rankings update every minute.</em>
+                  </span>
+                </span>
+              </button>
+            </div>
+            <h2>The Final Arc Competition</h2>
+            <div class="competition-card-body">
+              <p>Trade RWA markets to participate in the competition and climb the leaderboard.</p>
+            </div>
+            <div class="competition-reward-stack">
+              <span>$250K Prize Pool</span>
+            </div>
+            <div class="competition-actions">
+              <a class="competition-button" href="https://app.extended.exchange/join/PERPHUB" target="_blank" rel="noreferrer">Trade now</a>
+            </div>
+          </article>
+
+          <article class="competition-card panel is-closed" data-competition-status="closed">
+            <img class="competition-closed-ribbon" src="closed.png" alt="" loading="lazy" aria-hidden="true" />
             <div class="competition-card-top">
               <div class="competition-logos" aria-hidden="true">
                 <img src="Extendedlogo.jpg" alt="" loading="lazy" />
@@ -951,7 +995,7 @@
               <span>$50K prize pool</span>
             </div>
             <div class="competition-actions">
-              <a class="competition-button" href="https://app.extended.exchange/join/PERPHUB" target="_blank" rel="noreferrer">Join competition</a>
+              <a class="competition-button" href="https://app.extended.exchange/join/PERPHUB" target="_blank" rel="noreferrer">Trade now</a>
             </div>
           </article>
         </section>

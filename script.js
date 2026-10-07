@@ -21,6 +21,7 @@ const calculatorDexBrands = {
 const ACTIVE_TAB_STORAGE_KEY = "perphub.activeTab";
 const ACTIVE_DEX_STORAGE_KEY = "perphub.calculatorDex";
 const ACTIVE_LANGUAGE_STORAGE_KEY = "perphub.language";
+const ACTIVE_COMPETITION_FILTER_STORAGE_KEY = "perphub.competitionFilter";
 const supportedLanguages = new Set(["en", "zh", "ja", "ko"]);
 const languageHtmlCodes = {
   en: "en",
@@ -130,7 +131,9 @@ const i18nText = {
   },
   "Competition details": { zh: "竞赛详情", ja: "大会詳細", ko: "대회 상세" },
   "Campaign details": { zh: "活动详情", ja: "キャンペーン詳細", ko: "캠페인 상세" },
-  "Sep 16-30": { zh: "9月16日-30日", ja: "9月16日-30日", ko: "9월 16일-30일" },
+  Closed: { zh: "已结束", ja: "終了", ko: "종료" },
+  "Sep 16 - Oct 7": { zh: "9月16日 - 10月7日", ja: "9月16日 - 10月7日", ko: "9월 16일 - 10월 7일" },
+  "Oct 6 - Nov 3": { zh: "10月6日 - 11月3日", ja: "10月6日 - 11月3日", ko: "10월 6일 - 11월 3일" },
   "Aug 24 - Oct 4": { zh: "8月24日 - 10月4日", ja: "8月24日 - 10月4日", ko: "8월 24일 - 10월 4일" },
   "Sep 15-29": { zh: "9月15日-29日", ja: "9月15日-29日", ko: "9월 15일-29일" },
   "VOOI competition": { zh: "VOOI 竞赛", ja: "VOOI大会", ko: "VOOI 대회" },
@@ -191,6 +194,28 @@ const i18nText = {
   "RWA trading competition": { zh: "RWA 交易竞赛", ja: "RWA取引大会", ko: "RWA 거래 대회" },
   Scoring: { zh: "计分", ja: "スコア", ko: "점수 산정" },
   Leaderboard: { zh: "排行榜", ja: "ランキング", ko: "리더보드" },
+  "The Final Arc Competition": { zh: "The Final Arc 交易竞赛", ja: "The Final Arc 取引大会", ko: "The Final Arc 거래 대회" },
+  "Trade RWA markets to participate in the competition.": {
+    zh: "交易 RWA 市场以参与竞赛。",
+    ja: "RWA市場を取引して大会に参加します。",
+    ko: "RWA 시장을 거래해 대회에 참여하세요.",
+  },
+  "Your score combines PnL, Weighted Volume and Open Interest using the formula PnL × ⁴√(Weighted Volume × OI).": {
+    zh: "你的分数结合 PnL、加权交易量和未平仓量，公式为 PnL × ⁴√（加权交易量 × OI）。",
+    ja: "スコアはPnL、加重出来高、建玉を組み合わせ、PnL × ⁴√（加重出来高 × OI）で計算されます。",
+    ko: "점수는 PnL, 가중 거래량, 미결제약정을 결합하며 공식은 PnL × ⁴√(가중 거래량 × OI)입니다.",
+  },
+  "The top 500 traders share the 250,000 USDC prize pool. Rankings update every minute.": {
+    zh: "前 500 名交易者分享 250,000 USDC 奖池。排行榜每分钟更新。",
+    ja: "上位500名のトレーダーが250,000 USDCの賞金プールを分配します。ランキングは毎分更新されます。",
+    ko: "상위 500명의 트레이더가 250,000 USDC 상금 풀을 나눕니다. 순위는 매분 업데이트됩니다.",
+  },
+  "Trade RWA markets to participate in the competition and climb the leaderboard.": {
+    zh: "交易 RWA 市场参与竞赛并冲击排行榜。",
+    ja: "RWA市場を取引して大会に参加し、ランキング上位を目指します。",
+    ko: "RWA 시장을 거래해 대회에 참여하고 리더보드에 오르세요.",
+  },
+  "$250K Prize Pool": { zh: "$250K 奖池", ja: "$250K賞金プール", ko: "$250K 상금 풀" },
   "Extended RWA Trading Competition": { zh: "Extended RWA 交易竞赛", ja: "Extended RWA取引大会", ko: "Extended RWA 거래 대회" },
   "Join competition": { zh: "参加竞赛", ja: "大会に参加", ko: "대회 참여" },
   "10% rebates": { zh: "10% 返佣", ja: "10%リベート", ko: "10% 리베이트" },
@@ -673,6 +698,8 @@ const elements = {
   stackShareXButton: document.querySelector("#stackShareXButton"),
   vooiTab: document.querySelector("#vooiTab"),
   competitionTab: document.querySelector("#competitionTab"),
+  competitionFilterButtons: document.querySelectorAll("[data-competition-filter]"),
+  competitionCards: document.querySelectorAll("[data-competition-status]"),
   chartGrid: document.querySelector("#chartGrid"),
   shareModal: document.querySelector("#shareModal"),
   shareCard: document.querySelector("#shareCard"),
@@ -729,6 +756,22 @@ function setStoredTab(tabName) {
     localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, tabName);
   } catch {
     // The site should keep working even when browser storage is blocked.
+  }
+}
+
+function getStoredCompetitionFilter() {
+  try {
+    return localStorage.getItem(ACTIVE_COMPETITION_FILTER_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setStoredCompetitionFilter(filterName) {
+  try {
+    localStorage.setItem(ACTIVE_COMPETITION_FILTER_STORAGE_KEY, filterName);
+  } catch {
+    // The competition page should still work if storage is unavailable.
   }
 }
 
@@ -2277,6 +2320,26 @@ dexDirectoryButtons.forEach((button) => {
 
 dexDirectorySearch?.addEventListener("input", updateDexDirectory);
 
+let activeCompetitionFilter = ["ongoing", "closed"].includes(getStoredCompetitionFilter()) ? getStoredCompetitionFilter() : "ongoing";
+
+function updateCompetitionCards() {
+  elements.competitionFilterButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.competitionFilter === activeCompetitionFilter);
+  });
+
+  elements.competitionCards.forEach((card) => {
+    card.hidden = card.dataset.competitionStatus !== activeCompetitionFilter;
+  });
+}
+
+elements.competitionFilterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activeCompetitionFilter = button.dataset.competitionFilter || "ongoing";
+    setStoredCompetitionFilter(activeCompetitionFilter);
+    updateCompetitionCards();
+  });
+});
+
 normalizeLegacyCalculatorHash();
 applyStoredDex();
 setTab(tabFromHash() ?? getStoredTab(), { updateHash: !tabFromHash() });
@@ -2293,5 +2356,6 @@ renderStackBgPicker();
 applyStackCardBackground();
 calculateStack();
 updateProgramScrollHint();
+updateCompetitionCards();
 setLanguage(getStoredLanguage());
 document.body.classList.remove("app-loading");
