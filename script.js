@@ -39,6 +39,7 @@ const i18nText = {
   Home: { zh: "首页", ja: "ホーム", ko: "홈" },
   Calculator: { zh: "计算器", ja: "計算機", ko: "계산기" },
   Strategies: { zh: "策略", ja: "戦略", ko: "전략" },
+  Discover: { zh: "发现", ja: "Discover", ko: "Discover" },
   Competition: { zh: "竞赛", ja: "大会", ko: "대회" },
   More: { zh: "更多", ja: "その他", ko: "더보기" },
   "Points Stack": { zh: "积分组合", ja: "ポイントスタック", ko: "포인트 스택" },
@@ -521,6 +522,7 @@ const tabHashByName = {
   calculator: "calculator",
   stack: "points-stack",
   vooi: "strategies",
+  discover: "discover",
   competition: "competition",
 };
 const tabNameByHash = {
@@ -532,6 +534,8 @@ const tabNameByHash = {
   strategies: "vooi",
   strategy: "vooi",
   vooi: "vooi",
+  discover: "discover",
+  nika: "discover",
   competition: "competition",
   competitions: "competition",
   contest: "competition",
@@ -670,6 +674,7 @@ const elements = {
   burgerButton: document.querySelector("#burgerButton"),
   homeLogoButton: document.querySelector("#homeLogoButton"),
   homeActionButtons: document.querySelectorAll("[data-home-target]"),
+  copyCodeButtons: document.querySelectorAll("[data-copy-code]"),
   vooiVideo: document.querySelector("#vooiVideo"),
   homeTab: document.querySelector("#homeTab"),
   calculatorTab: document.querySelector("#calculatorTab"),
@@ -697,6 +702,7 @@ const elements = {
   stackCopyCardButton: document.querySelector("#stackCopyCardButton"),
   stackShareXButton: document.querySelector("#stackShareXButton"),
   vooiTab: document.querySelector("#vooiTab"),
+  discoverTab: document.querySelector("#discoverTab"),
   competitionTab: document.querySelector("#competitionTab"),
   competitionFilterButtons: document.querySelectorAll("[data-competition-filter]"),
   competitionCards: document.querySelectorAll("[data-competition-status]"),
@@ -1870,6 +1876,30 @@ async function copyResults() {
   }
 }
 
+async function copyCodeFromButton(button) {
+  const code = button?.dataset.copyCode || "";
+  if (!code) return;
+
+  try {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(code);
+    } else {
+      copyWithFallback(code);
+    }
+  } catch {
+    copyWithFallback(code);
+  }
+
+  const label = button.querySelector("em");
+  if (!label) return;
+  const originalLabel = label.dataset.defaultLabel || label.textContent || "Copy";
+  label.dataset.defaultLabel = originalLabel;
+  label.textContent = "Copied";
+  setTimeout(() => {
+    label.textContent = originalLabel;
+  }, 1400);
+}
+
 function copyWithFallback(text) {
   const textarea = document.createElement("textarea");
   textarea.value = text;
@@ -1903,7 +1933,7 @@ function bindSyncedControl(input, range) {
 }
 
 function setTab(tabName, options = {}) {
-  const targetTab = ["home", "calculator", "stack", "vooi", "competition"].includes(tabName) ? tabName : "home";
+  const targetTab = ["home", "calculator", "stack", "vooi", "discover", "competition"].includes(tabName) ? tabName : "home";
   const previousTab = getStoredTab();
 
   elements.tabButtons.forEach((button) => {
@@ -1923,6 +1953,7 @@ function setTab(tabName, options = {}) {
   elements.calculatorTab.classList.toggle("active", targetTab === "calculator");
   elements.stackTab.classList.toggle("active", targetTab === "stack");
   elements.vooiTab.classList.toggle("active", targetTab === "vooi");
+  elements.discoverTab.classList.toggle("active", targetTab === "discover");
   elements.competitionTab.classList.toggle("active", targetTab === "competition");
   setStoredTab(targetTab);
 
@@ -2221,6 +2252,9 @@ elements.stackShareCloseButton?.addEventListener("click", closeStackShareCard);
 elements.stackSaveCardButton?.addEventListener("click", saveStackShareImage);
 elements.stackCopyCardButton?.addEventListener("click", copyStackShareImage);
 elements.stackShareXButton?.addEventListener("click", shareStackOnX);
+elements.copyCodeButtons.forEach((button) => {
+  button.addEventListener("click", () => copyCodeFromButton(button));
+});
 
 elements.burgerButton?.addEventListener("click", (event) => {
   event.stopPropagation();
